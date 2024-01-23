@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb bg-white">
+    <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+    {% if app.request.get('admin') == 'true' %}
+      <li class="breadcrumb-item">Maestros</li>
+    {% else %}
+    <li class="breadcrumb-item"><a href="{{path('recaudos')}}">Recaudos</a></li>
+    {% endif %}
+    <li class="breadcrumb-item active" aria-current="page">Historial Cajas</li>
+  </ol>
+</nav>
+<div class="container-fluid">
+
+  <header class='text-center'>
+      <h2>Historial de Cajas.</h2>
+      <span class="help-block"><li class="fa fa-info-circle text-info"></li> Aquí podrá ver todo el historial de cajas registradas, estén o nó activas.</span>
+  </header>
+
+  <div class="text-left row mb-2" id="filtros">
+    <div class="col-md-2"><h6 class="mr-3">Filtros de búsqueda</h6></div>
+    <div class="col-md-7">
+      {{ form_start(form) }}
+        <div class="row d-inline-block">
+          <div class="col-md-12">{{ form_widget(form.nombreCaja) }}</div>
+        </div>
+        <div class="row d-inline-block">
+          <div class="col-md-12">{{ form_widget(form.archivado) }}</div>
+        </div>
+        <div class="row d-inline-block">
+          <div class="col-md-12">{{ form_widget(form.session) }}</div>
+        </div>
+        <div class="row d-inline-block">
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-info btn-sm"><li class="fa fa-search"></li></button>
+          </div>
+        </div>
+      {{ form_end(form) }}
+    </div>
+    {% if historial is not empty %}
+      <div class="col-md-3 text-right">
+          <span class="label label-warning">
+              Total Entradas: <span class="cTomato">{{ historial.getTotalItemCount }}</span>
+          </span>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if historial is not empty %}
+    <div class="table-responsive" style="height:650px; font-size:13px;">
+      <table class="table table-striped table-sm">
+          <thead>
+              <tr>
+                  <th>Nombre Caja</th>
+                  <th>Fecha/Hora Creación</th>
+                  <th>Usuario</th>
+                  <th>Empresa | Sede Agencia</th>
+                  <th>¿Sesión Activa?</th>
+                  <th>¿Archivada?</th>
+                  <th>Acciones</th>
+              </tr>
+          </thead>
+          <tbody>
+          {% for caja in historial %}
+              <tr>
+                  <td>{{ caja.nombreCaja }}</td>
+                  <td>{{ caja.fechaHoraCreacion|date("d/m/Y h:i:s A") }}</td>
+                  <td>{{ caja.idUsuario }}</td>
+                  <td>{{ caja.idEmpresaSedeAgencia }}</td>
+                  <td>{% if caja.sessionActiva == 0 %}
+                      <span style="font-size:13px;" class="badge badge-danger text-white">NO</span>
+                  {% elseif caja.sessionActiva == 1 %}
+                      <span style="font-size:13px;" class="badge badge-success text-white">SI</span>
+                  {% endif %}</td>
+                  <td>{% if caja.hasArchivado == 0 %}
+                      <span style="font-size:13px;" class="badge badge-danger text-white">NO</span>
+                  {% elseif caja.hasArchivado == 1 %}
+                      <span style="font-size:13px;" class="badge badge-success text-white">SI</span>
+                  {% endif %}</td>
+                  <td>
+                      <ul class="">
+                          {% if caja.hasArchivado == 1 %}
+                          <li>
+                              <a title="Desarchivar Caja" href="{{ path('DesArchivarCajas',{idCaja: caja.idCaja })}}">
+                                <span style="font-size:19px;" class="fa fa-file-archive cTomato"></span>
+                              </a>
+                          </li>
+                          {% endif %}
+                          {% if app.session.get("rol") == "Cajero" or app.session.get("rol") == "Administrador" %}
+                          <li>
+                              <a title="Editar" href="{{ path('EditarCaja',{idCaja:caja.getIdCaja()}) }}">
+                                <span style="font-size:19px;" class="fa fa-edit cTomato"></span>
+                              </a>
+                          </li>
+                          {% endif %}
+                          {% if caja.hasArchivado == 0 %}
+                            {% if app.session.get("rol") == "Administrador" %}
+                            <li>
+                                <a href="{{ path('ArchivarCajas',{idCaja:caja.getIdCaja(),admin:"true"}) }}" title="Archivar / Eliminar">
+                                  <span style="font-size:19px;" class="fa fa-trash-alt cTomato"></span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li>
+                                <a href="{{ path('ArchivarCajas',{idCaja:caja.getIdCaja()}) }}" title="Archivar / Eliminar">
+                                  <span style="font-size:19px;" class="fa fa-archive cTomato"></span>
+                                </a>
+                            </li>
+                            {% endif %}
+                          {% endif %}
+                      </ul>
+                  </td>
+              </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+      {# display navigation #}
+      <div class="navigation">
+          {{ knp_pagination_render(historial) }}
+      </div>
+    </div>
+  {% else %}
+      <div class="alert alert-warning w-50 mx-auto">No hay registros que listar.</div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}

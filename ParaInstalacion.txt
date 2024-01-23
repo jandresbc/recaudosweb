@@ -1,0 +1,31 @@
+1. PARA CHROME
+
+Existe otro método utilizando Chrome donde puedes omitir el cuadro de dialogo de la impresora a esto se le llama Chrome en modo Kiosko el cual se habilita así:
+
+1. Crea un acceso directo de chrome en el escritorio
+2. Clic derecho al acceso directo -> propiedades
+3. Agrega al target donde está "c:\... \chrome.exe" --kiosk --kiosk-printing (Para solo imprimir directamente agregar solo --kiosk-printing)
+4. Acepta los cambios y abre el acceso directo (este acceso directo es el que deberás dejar a tu cliente cuando quiera abrir tu aplicación)
+
+Ahora cualquier instrucción para imprimir con javascript mandará a imprimir SIN preguntar directo a la impresora predeterminada.
+
+Así puedes mandar imprimir tickets en un punto de venta.
+
+2. FIREFOX
+
+El primer punto es quitar este dialogo de seleccion de impresora, en firefox es tan sencillo como:
+
+Abrir una nueva pestaña
+Escribir en ella –> about:config
+Hacer click en el boton
+Escribir –> print.(no se olviden del punto)
+Verificar si existe el valor: print.always_print_silent 
+Si existe este valor hay que cambiarlo por TRUE (haciendo doble click se le cambia de valor)
+No existe este valor hay que crearlo:
+Click derecho en alguno de los valores
+Seleccionar Nuevo –> Logico
+Asignarle el nombre:  print.always_print_silent
+Asignarle el valor de TRUE
+Hecho esto el dialogo de seleccion desaparece, adicionalmente pueden ocultar el cuadro de dialogo de “Progreso de Impresion” con el valor print.show_print_progress estableciendolo a false
+
+3. Tener en cuenta que se deben habilitar las ventanas emergentes para el software de recaudos.

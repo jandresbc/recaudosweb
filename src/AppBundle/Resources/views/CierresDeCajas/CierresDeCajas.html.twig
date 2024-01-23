@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+          <div class="col-md-12 text-center">
+              <header class='text-center'>
+                  <h2>Registrar Cierre de Caja.</h2>
+                  <span class="help-block"><li class="fa fa-info-circle text-info"></li> Realiza el Arqueo de la caja e ingresa sus datos para diligenciar el cierre de caja.</span>
+              </header>
+              <div class="col-md-12">
+                {{ form_start(form) }}
+                  <div class="form-group row">
+                    <div class="inline-block col-md-5 text-right">{{ form_label(form.totalRecaudoCaja) }}</div>
+                    <div class="inline-block col-md-7">{{ form_widget(form.totalRecaudoCaja,{'attr': {'value': totalRecaudo,'readonly':true}}) }}</div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="inline-block col-md-5 text-right">{{ form_label(form.vlrEnCaja) }}</div>
+                    {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+                    <div class="inline-block col-md-7">{{ form_widget(form.vlrEnCaja,{'attr': {'value': totalRecaudo}}) }}</div>
+                    {% else %}
+                    <div class="inline-block col-md-7">{{ form_widget(form.vlrEnCaja) }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="form-group row">
+                    <div class="inline-block col-md-5 text-right">{{ form_label(form.diferenciaCierre) }}</div>
+                    <div class="inline-block col-md-7">{{ form_widget(form.diferenciaCierre) }}</div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="inline-block col-md-5 text-right">{{ form_label(form.totalColillas) }}<span class="help-block"><li class="fa fa-info-circle text-info"></li> (# de Facturas) Opcional</span></div>
+                    <div class="inline-block col-md-7">{{ form_widget(form.totalColillas,{'attr': {'value': totalFacturas}}) }}</div>
+                  </div>
+                  <br>
+                  <div class="text-center">
+                    <input type="submit" class='btn btn-primary' value="Registrar Cierre" />
+                  </div>
+                {{ form_end(form) }}
+              </div>
+          </div>
+          {% if mensajes is defined and mensajes is not null %}
+              <div id='mensaje' class="alert alert-warning alert-dismissible mt-3" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ mensajes }}
+              </div>
+          {% endif %}
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+      {{parent()}}
+      $(document).ready(function(){
+        $('#appbundle_cierresdecajas_vlrEnCaja').change(function(){
+          var diff = 0;
+          diff = $(this).val() - $("#appbundle_cierresdecajas_totalRecaudoCaja").val();
+          $('#appbundle_cierresdecajas_diferenciaCierre').val(diff);
+        });
+      });
+{% endblock %}

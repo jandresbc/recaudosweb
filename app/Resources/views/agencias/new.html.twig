@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item">Maestros</li>
+        <li class="breadcrumb-item"><a href="{{ path('agencias_index') }}">Agencias</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Crear Agencia</li>
+      </ol>
+    </nav>
+    <div class="container-fluid" style="height:920px;">
+
+      <header class='text-center'>
+          <h2>Crear Agencia.</h2>
+          <span class="help-block"><li class="fa fa-info-circle text-info"></li> Crea una nueva agencia. (* Campos requeridos.)</span>
+      </header>
+
+      {% if mensajes is defined and mensajes is not null%}
+          <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              {{ mensajes }}
+          </div>
+      {% endif %}
+
+      <div class="container w-50">
+        {% if AgenciaExists is not defined %}
+          {{ form_start(form) }}
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.nombreAgencia) }}</div>
+                <div>{{ form_widget(form.nombreAgencia) }}</div>
+              </div>
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.nitAgencia) }}
+                <span class="help-block"><li class="fa fa-info-circle text-info"></li> Digite el nit de la Agencia de Recaudo con el dígito de verificación. Ejemplo: {{ app.session.get('nitAgencia') }} </span>
+                </div>
+                <div>{{ form_widget(form.nitAgencia) }}</div>
+              </div>
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.direccion) }}</div>
+                <div>{{ form_widget(form.direccion) }}</div>
+              </div>
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.telCel) }}</div>
+                <div>{{ form_widget(form.telCel) }}</div>
+              </div>
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.inactiva) }}</div>
+                <div>{{ form_widget(form.inactiva) }}</div>
+              </div>
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.agenciasEmpresas) }}</div>
+                <div>{{ form_widget(form.agenciasEmpresas) }}</div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-12"><input type="submit" class="btn btn-primary btn-sm" value="Crear" /></div>
+              </div>
+          {{ form_end(form) }}
+        {% elseif AgenciaExists == true %}
+          {{ form_start(form) }}
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.nombreAgencia) }}</div>
+                <div>{{ form_widget(form.nombreAgencia,{attr:{readonly:true}}) }}</div>
+              </div>
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.nitAgencia) }}
+                <span class="help-block"><li class="fa fa-info-circle text-info"></li> Digite el nit de la Agencia de Recaudo con el dígito de verificación. </span>
+                </div>
+                <div>{{ form_widget(form.nitAgencia,{attr:{readonly:true}}) }}</div>
+              </div>
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.direccion) }}</div>
+                <div>{{ form_widget(form.direccion,{attr:{readonly:true}}) }}</div>
+              </div>
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.telCel) }}</div>
+                <div>{{ form_widget(form.telCel,{attr:{readonly:true}}) }}</div>
+              </div>
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.inactiva) }}</div>
+                <div>{{ form_widget(form.inactiva) }}</div>
+              </div>
+              <div class="col-md-12 mx-auto mt-1">
+                <div class="text-left ml-2">{{ form_label(form.agenciasEmpresas) }}</div>
+                <div>{{ form_widget(form.agenciasEmpresas) }}</div>
+              </div>
+              <input type="hidden" value="true" name="habilitarAgencia" id="habilitarAgencia">
+              <div class="row mt-3">
+                <div class="col-md-6"><input type="button" onclick="JavaScript:window.history.back()" class="btn btn-warning btn-sm" value="Volver Atras" /></div>
+                <div class="col-md-6"><input type="submit" class="btn btn-primary btn-sm" value="Habilitar Agencia" /></div>
+              </div>
+          {{ form_end(form) }}
+        {% endif %}
+      </div>
+      <div class="row ml-3">
+        <ul>
+            <li>
+                <a class="btn btn-info btn-sm" href="{{ path('agencias_index') }}">Volver a la lista</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+{% endblock %}

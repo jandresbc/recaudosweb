@@ -1,0 +1,104 @@
+{% extends 'baseInformes.html.twig' %}
+
+{% block stylesheets %}
+<style>
+  .table-responsive{
+    font-size: 11px;
+  }
+
+  table, tr, td, th, tbody, thead, tfoot {
+    page-break-inside: avoid !important;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+  <header>
+    <h3 class="cTomato">Informe Recaudo por NIU (Matrícula).</h3>
+
+    {% if app.session.get("rol") != 'Administrador Agencias' and app.session.get("rol") != 'Cajero' and app.session.get("rol") != 'Superusuario' %}
+      {{ config[0].getHeaderInformes|replace({"%title%":"Informe Recaudo por NIU (Matrícula)."|upper})|raw }}
+    {% endif %}
+
+    <div class="col-md-6">
+      <span class="cTomato label">Fecha Informe</span>: {{ "now"|date("d/m/Y h:i:s A", "America/Bogota") }}
+      <span><span class="cTomato label">TOTAL</span>: ${{ totalRecaudado }}</span>
+    </div>
+  </header>
+  {% if pagos is defined %}
+    {% set total = 0 %}
+    <div class="table-responsive">
+      <table class="table table-sm table-striped table-bordered">
+        <tr class="bg-dark text-white">
+          <th>Item</th>
+          {% if app.session.get('rol') == 'Superusuario' %}
+          <th>Empresa</th>
+          {% endif %}
+          <th>Sede Agencia</th>
+          {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+          <th>NIU</th>
+          {% endif %}
+          <th>Factura</th>
+          <th>Usuario</th>
+          <th>Transacción</th>
+          <th>Fecha / Hora Pago</th>
+          <th>Valor Pago</th>
+          <th>Método Pago</th>
+          {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+          <th>Banco</th>
+          <th>Nro. Consignación</th>
+          <th>Fecha Consignación</th>
+          <th>Observaciones</th>
+          {% endif %}
+        </tr>
+        <tbody>
+          {% for index, pago in pagos %}
+            <tr>
+              <td>{{ index+1 }}</td>
+              {% if app.session.get('rol') == 'Superusuario' %}
+              <td class="text-left">{{ pago.getIdTransaccion().getIdEmpresaSedeAgencia().getIdEmpresa() }}</td>
+              {% endif %}
+              <td class="text-left">{{ pago.getIdTransaccion().getIdEmpresaSedeAgencia().getIdSedeAgencia() }}</td>
+              {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+              <td>{{ pago.getIdFactura().getMatricula() }}</td>
+              {% endif %}
+              <td>{{ pago.getIdFactura().getNroFactura() }}</td>
+              <td class="text-left">{{ pago.getIdFactura().getNombreUsuario()|title }}</td>
+              <td>{{ pago.getIdTransaccion().getNroTransaccion() }}</td>
+              <td>{{ pago.getFechaHoraPago()|date("d/m/Y h:i:s a") }}</td>
+              <td>${{ pago.getVlrPago() }}</td>
+              <td>{{ pago.getIdMetodoPago() }}</td>
+              {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+              <td>{{ pago.getBanco() }}</td>
+              <td>{{ pago.getNroConsignacion() }}</td>
+              {% if pago.getFechaConsignacion() is not null and pago.getFechaConsignacion() != '' %}
+              <td>{{ pago.getFechaConsignacion()|date('Y-m-d H:i:s') }}</td>
+              {% else %}
+              <td></td>
+              {% endif %}
+              <td>{{ pago.getObservaciones() }}</td>
+              {% endif %}
+            </tr>
+            {% set total = total + pago.getVlrPago() %}
+          {% endfor %}
+          <tr>
+            {% if app.session.get('rol') == 'Superusuario' %}
+              <th colspan="8">Total Recaudo</th>
+              <th>${{ total }}</th>
+              <td colspan="5"></td>
+            {% else %}
+              <th colspan="7">Total Recaudo</th>
+              <th>${{ total }}</th>
+              <td colspan="5"></td>
+            {% endif %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+{% endblock %}

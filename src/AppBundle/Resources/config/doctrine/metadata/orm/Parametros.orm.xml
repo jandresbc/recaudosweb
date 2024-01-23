@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Parametros" table="parametros">
+    <indexes>
+      <index name="id_empresa" columns="id_empresa"/>
+    </indexes>
+    <id name="idParametros" type="integer" column="id_parametros">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="urlLogoEmpresa" type="string" column="url_logo_empresa" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <many-to-one field="idEmpresa" target-entity="Empresas" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_empresa" referenced-column-name="id_empresa"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

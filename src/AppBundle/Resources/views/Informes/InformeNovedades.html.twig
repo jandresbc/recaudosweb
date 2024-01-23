@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item">Informes</li>
+      <li class="breadcrumb-item active" aria-current="page">Novedades</li>
+    </ol>
+  </nav>
+  <div class="container-fluid">
+      <div class="row" style="height:700px;">
+          <div class="col-md-12 text-center">
+              <header class='text-center'>
+                  <h2>Informe de Novedades.</h2>
+                  <span class="help-block"><li class="fa fa-info-circle text-info"></li> En este módulo le permite al usuario generar un informe de las novedades realizadas, dentro del periodo de facturación seleccionado, a los módulos permitidos por el sistema. Ejemplo: Novedades del módulo "Pagos".</span>
+              </header>
+              <main class="text-center">
+                {{ form_start(form) }}
+                  <div class="row col-md-12 mx-auto">
+                    <div class="col-md-3">
+                      <div class="text-left label">{{ form_label(form.tipoNovedad) }}</div>
+                      <div class="text-left">{{ form_widget(form.tipoNovedad) }}</div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="text-left label">{{ form_label(form.modulo) }}</div>
+                      <div class="text-left">{{ form_widget(form.modulo) }}</div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="text-left label">{{ form_label(form.mesFacturacion) }}</div>
+                      <div class="text-left">{{ form_widget(form.mesFacturacion) }}</div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="text-left label">{{ form_label(form.anioFacturacion) }}</div>
+                      <div class="text-left">{{ form_widget(form.anioFacturacion) }}</div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="exportType" name="exportType" value="">
+                  <div class="text-center mt-3">
+                    <button type="submit" id="btnPDF" class='btn btn-sm btn-danger'>
+                      <li class="fa fa-file-pdf"> Generar Informe .PDF</li>
+                    </button>
+                    <button type="submit" id="btnXLS" class='btn btn-sm btn-success' >
+                      <li class="fa fa-file-excel"> Generar Informe .XLS</li>
+                    </button>
+                    <button type="submit" id="btnCSV" class='btn btn-sm btn-success' >
+                      <li class="fa fa-file-excel"> Generar Informe .CSV</li>
+                    </button>
+                    <!--<button type="submit" id="btnChart" class='btn btn-sm btn-warning' >
+                      <li class="fa fa-chart-pie"> Gráfica % Pagos Anteriores vs % Recaudo</li>
+                    </button>-->
+                  </div>
+                {{ form_end(form) }}
+                {% if mensajes is defined and mensajes is not null %}
+                    <div id='mensaje' class="text-center alert alert-warning alert-dismissible mx-auto mt-3 w-50" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      {{ mensajes }}
+                    </div>
+                {% endif %}
+              </main>
+
+              {% if porcentajePagosAnteriores is defined %}
+                <div class="row m-3 w-100">
+                  <div class="col-md-12 col-xs-12 text-center">
+                    <div class="w-25 mx-auto">
+                      <button type="button" title="Descargar Gráfica" class="btn btn-sm btn-info" onclick="download()">Descargar Gráfica.</button>
+                      <canvas id="pieCartera" height="40" width="40" ></canvas>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+
+          </div>
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  $(document).ready(function(){
+    $("#btnPDF").click(function(e){
+      $("#exportType").val("pdf");
+    });
+
+    $("#btnXLS").click(function(e){
+      $("#exportType").val("xls");
+    });
+
+    $("#btnCSV").click(function(e){
+      $("#exportType").val("csv");
+    });
+
+    /*$("#btnChart").click(function(e){
+      $("#exportType").val("grafica");
+    });*/
+
+    {% if porcentajePagosAnteriores is defined%}
+      var ctx = $("#pieCartera");
+      var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ["{{ porcentajePagosAnteriores | e('js') }}% Pagos Anteriores", "{{ porcentajePagos | e('js') }}% Cartera"],
+            datasets: [{
+                label: 'Porcentajes',
+                data: [{{ porcentajePagosAnteriores | e('js') }},{{ porcentajePagos | e('js') }}],
+                backgroundColor: [
+                    'rgba(163, 203, 56,0.8)',
+                    'rgba(234, 32, 39,0.8)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            title : {
+                display: true,
+                text: 'Porcentajes de Pagos Anteriores y Total Recaudado con respecto al Total Facturado.'
+            },
+            animation : {
+              onComplete : function(){
+
+              }
+            },
+            tooltips : {
+              enabled: true,
+              mode : 'point'
+            }
+        }
+      });
+
+      download = function(){
+        app.downloadChartCanvas('pieCartera');
+      }
+    {% endif %}
+
+  });
+{% endblock %}

@@ -1,0 +1,262 @@
+/*Estilos personalizados para la app.*/
+
+body{
+  margin:0px;
+  padding:0px;
+}
+
+.nombreapp{
+  border: 1px solid #DDD;
+  max-width: 37%;
+  vertical-align: middle;
+  margin: 10px 0 0 0;
+  padding: 0px 7px 0px 7px;
+  display: inline-block;
+  float: left !important;
+  font-size: 16px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  box-shadow: 0px 0px 1px 2px rgba(255,255,255,0.10);
+}
+
+#app{
+  font-size:30px;
+  font-weight: bold;
+  color: #7CDA04;
+}
+
+.control-label{
+  width: 40%;
+}
+
+.CheckboxType span{
+  margin: 0px;
+}
+
+.space-left{
+  padding-left: 15px;
+}
+
+#adminbundle_historialentradassalidas_nombreFunVis{
+  width: 100%;
+}
+
+#filtrar{
+  margin-top:10px;
+}
+
+.head-dashboard h2{
+  margin: 15px 0px 0px -145px;
+  display: inline-block;
+  font-weight: bold;
+}
+
+#content .panel-login{
+  border: 2px solid #DDD;
+  width: 33%;
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 300px) and (max-width:600px){
+  #content .panel-login{
+    width: 90%;
+  }
+
+  .nombreapp{
+    width: 90%;
+  }
+}
+
+.panel-login .panel-heading{
+  padding-top: 2px;
+}
+
+.panel-login input[type=text], .panel-login input[type=password]{
+  width: 60%;
+}
+
+.panel-login select{
+  width: 60%;
+}
+
+.help-block{
+  margin: 0 auto;
+  width:50%;
+}
+
+.row{
+  margin: 0px;
+  padding: 0px;
+}
+
+.preloader {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 30px;
+  left: 0;
+  z-index: 2000;
+}
+
+.table td{
+  text-align: left;
+}
+
+.table th{
+  text-align:center;
+}
+
+form div div{
+  padding: 7px;
+}
+
+form div div>label{
+  padding-right: 17px;
+}
+
+input[type=text],input[type=password],textarea,select{
+  border-radius: 3px;
+  margin: 0px;
+  padding: 4px 4px 4px 7px;
+  text-decoration: none;
+  border: 1px solid #DDD;
+  width: 20%;
+  color:#333;
+}
+
+.downloads{
+  width: 100%;
+  text-align: left;
+  border-bottom:1px solid #DDD;
+}
+
+.downloads img{
+  width: 3.5%;
+  height: 35px;
+}
+
+.downloads #pdf{
+  width: 3%;
+  height: 35px;
+}
+
+input:hover,textarea:hover,select:hover{
+  border: 1px solid #5bc0de;
+  -webkit-box-shadow: 0px 0px 15px -5px rgba(91,192,222,0.97);
+  -moz-box-shadow: 0px 0px 15px -5px rgba(91,192,222,0.97);
+  box-shadow: 0px 0px 15px -5px rgba(91,192,222,0.97);
+}
+
+input:focus,textarea:focus,select:focus{
+  border: 1px solid #5bc0de;
+  -webkit-box-shadow: 0px 0px 15px -5px rgba(91,192,222,0.97);
+  -moz-box-shadow: 0px 0px 15px -5px rgba(91,192,222,0.97);
+  box-shadow: 0px 0px 15px -5px rgba(91,192,222,0.97);
+}
+
+.listAcciones{
+  margin-left: 0px;
+  padding-left: 0px;
+}
+
+.listAcciones li{
+  text-decoration: none;
+  list-style: none;
+}
+
+td>.listAcciones>li{
+  display: inline-block;
+  margin-left:2px;
+}
+
+.head-dashboard{
+  background-color: #222;/*#5cb85c;*/
+  color:#FFF;
+  width: 100%;
+  max-height: 50%;
+  margin: -10px 0px 0px 0px;
+  padding: 5px;
+  top:0px;
+}
+
+.logout{
+  font-size: 36px;
+  margin-top: 10px;
+  color: #7CDA04;
+}
+
+.dataTables_length label select{
+  width: 28%;
+  border: 1px solid #DDD;
+}
+
+#content{
+  /*border: 1px solid #DDD;*/
+  text-align: center;
+  background: #FEFEFE;
+  max-height: 100%;
+  padding: 15px 5px 5px 5px;
+  margin: 0px;
+  max-width: 100%;
+}
+
+.linkDownload{
+  display: inline-block;
+  font-weight: bold;
+  font-size: 18px;
+  color: #FFFFFF;
+  padding: 21% 10px 10px 10px;
+  background: #0174DF;
+  margin:10px;
+  width: 260px;
+  height: 200px;
+  top: 0px;
+}
+
+.linkDownload:hover{
+  cursor: pointer;
+  background: #0040FF;
+}
+
+.panel{
+  margin: 0 auto;
+  width:40%;
+}
+
+.panel>.panel-content{
+  padding: 10px;
+}
+
+.menu-principal{
+  border-right:1px solid #DDD;
+  height: 900px;
+  background: #333;/*#f6f6f6 ;*/
+}
+
+.nav{
+  margin: 15px 0px 0px -15px;
+}
+
+.main-menu{
+    text-align: left;
+    /*position: fixed;*/
+    width: 120%;
+    margin-top: 2px;
+}
+
+.nav li a{
+  color: #06CD8E;
+}
+
+.nav li a:hover{
+  /*background: #06CD8E;*/
+    background: #FFFFFF;
+}
+
+.foot{
+  position:fixed;
+  width: 100%;
+  bottom:0px;
+  text-align: center;
+}

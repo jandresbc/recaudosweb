@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item">Maestros</li>
+      <li class="breadcrumb-item"><a href="{{ path('sedesagencias_index') }}">Sedes Agencias</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Crear Sede</li>
+    </ol>
+  </nav>
+  <div class="container-fluid" style="height:920px;">
+    <header class='text-center'>
+        <h2>Crear Sede.</h2>
+        <span class="help-block"><li class="fa fa-info-circle text-info"></li> Crea una nueva sede (* Campos requeridos.). Antes de que se cree una nueva Sede, asegúrese de que esta, no haya sido creada anteriormente.</span>
+    </header>
+
+    {% if mensajes is defined and mensajes is not null%}
+        <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ mensajes }}
+        </div>
+    {% endif %}
+
+    <div class="container w-50">
+      {{ form_start(form) }}
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(form.nombreSede) }}</div>
+            <div>{{ form_widget(form.nombreSede) }}</div>
+          </div>
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(form.direccion) }}</div>
+            <div>{{ form_widget(form.direccion) }}</div>
+          </div>
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(form.telCel) }}</div>
+            <div>{{ form_widget(form.telCel) }}</div>
+          </div>
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(form.inactiva) }}</div>
+            <div>{{ form_widget(form.inactiva) }}</div>
+          </div>
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(form.idDivipola) }}</div>
+            <div>{{ form_widget(form.idDivipola) }}</div>
+          </div>
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(form.idAgencia) }}</div>
+            <div>{{ form_widget(form.idAgencia) }}</div>
+          </div>
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(form.empresa) }}</div>
+            <div>{{ form_widget(form.empresa) }}</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-12"><input type="submit" class="btn btn-primary btn-sm" value="Crear" /></div>
+          </div>
+      {{ form_end(form) }}
+    </div>
+
+    <div class="row ml-3">
+      <ul>
+          <li>
+              <a class="btn btn-info btn-sm" href="{{ path('sedesagencias_index') }}">Volver a la lista</a>
+          </li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+{% endblock %}

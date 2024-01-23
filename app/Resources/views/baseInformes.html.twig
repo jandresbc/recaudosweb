@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Redylab Recaudos - Copyright © devstudio.me | Ing. Julio Andrés Barrera C.{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+
+        {% if typeExport == 'excel' or typeExport == 'view' %}
+          <link rel="icon" type="image/x-png" href="{{ asset('favicon.png') }}" />
+          <link href="{{ app.request.basePath~'/bundles/app/css/styles.css' }}" type="text/css" rel='stylesheet' media='screen'/>
+
+          <!-- Jquery -->
+          <script src="{{ app.request.basePath~'/bundles/app/js/bower_components/jquery/dist/jquery.min.js' }}" type="application/javascript"></script>
+
+          <!-- Bootstrap -->
+          <link href="{{ app.request.basePath~'/bundles/app/js/bower_components/bootstrap/dist/css/bootstrap.min.css' }}" type="text/css" rel='stylesheet' media='screen'/>
+          <script src="{{ app.request.basePath~'/bundles/app/js/bower_components/bootstrap/dist/js/bootstrap.min.js' }}" type="application/javascript"></script>
+
+          <!-- FontAwesome 5.0.8 -->
+          <link href="{{ app.request.basePath~'/bundles/app/js/bower_components/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css' }}" rel="stylesheet"/>
+
+          <!-- moment -->
+          <script src="{{ app.request.basePath~'/bundles/app/js/bower_components/moment/min/moment.min.js' }}" type="application/javascript"></script>
+          <script src="{{ app.request.basePath~'/bundles/app/js/bower_components/moment/locale/es.js' }}" type="application/javascript"></script>
+
+          <!-- jAlert 4.0 Jquery -->
+          <link rel="stylesheet" href="{{ app.request.basePath~'/bundles/app/js/jAlert/dist/jAlert.css' }}" />
+          <script src="{{ app.request.basePath~'/bundles/app/js/jAlert/dist/jAlert.min.js' }}"></script>
+          <script src="{{ app.request.basePath~'/bundles/app/js/jAlert/dist/jAlert-functions.min.js' }}"> //optional!!</script>
+
+          <!-- chartjs -->
+          <script src="{{ app.request.basePath~'/bundles/app/js/bower_components/chart.js/dist/Chart.min.js' }}" type="application/javascript"></script>
+
+          <script src="{{ app.request.basePath~'/bundles/app/js/app.js' }}" type="application/javascript"></script>
+        {% elseif typeExport == 'pdf' %}
+          <link rel="icon" type="image/x-png" href="{{ base_dir~'web/favicon.png' }}" />
+          <link href="{{ base_dir~'web/bundles/app/css/styles.css' }}" type="text/css" rel='stylesheet' media='screen'/>
+
+          <!-- Jquery -->
+          <script src="{{ base_dir~'web/bundles/app/js/bower_components/jquery/dist/jquery.min.js' }}" type="application/javascript"></script>
+
+          <!-- Bootstrap -->
+          <link href="{{ base_dir~'web/bundles/app/js/bower_components/bootstrap/dist/css/bootstrap.min.css' }}" type="text/css" rel='stylesheet' media='screen'/>
+          <script src="{{ base_dir~'web/bundles/app/js/bower_components/bootstrap/dist/js/bootstrap.min.js' }}" type="application/javascript"></script>
+
+          <!-- FontAwesome 5.0.8 -->
+          <link href="{{ base_dir~'web/bundles/app/js/bower_components/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css' }}" rel="stylesheet"/>
+
+          <!-- moment -->
+          <script src="{{ base_dir~'web/bundles/app/js/bower_components/moment/min/moment.min.js' }}" type="application/javascript"></script>
+          <script src="{{ base_dir~'web/bundles/app/js/bower_components/moment/locale/es.js' }}" type="application/javascript"></script>
+
+          <!-- jAlert 4.0 Jquery -->
+          <link rel="stylesheet" href="{{ base_dir~'web/bundles/app/js/jAlert/dist/jAlert.css' }}" />
+          <script src="{{ base_dir~'web/bundles/app/js/jAlert/dist/jAlert.min.js' }}"></script>
+          <script src="{{ base_dir~'web/bundles/app/js/jAlert/dist/jAlert-functions.min.js' }}"> //optional!!</script>
+
+          <!-- chartjs -->
+          <script src="{{ base_dir~'/web/bundles/app/js/bower_components/chart.js/dist/Chart.min.js' }}" type="application/javascript"></script>
+        {% endif %}
+        <style>
+          body{
+            font-size: 13px;
+          }
+        </style>
+    </head>
+    <body>
+        <div class='text-center row'>
+            <div class='col-md-12'>
+              {% if mensajes_sistema is defined %}
+                {% if mensajes_sistema is not null %}
+                  <div id='mensajeSistema' class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ mensajes_sistema }}
+                  </div>
+                {% endif %}
+              {% endif %}
+              <div class="col-md-12 col-xs-12 text-center">
+                  {% if app.session.get('nitAgencia') in app.session.get("nitEmpresas") %}
+                    {{ app.session.get('configuracionapps')[0].getMensajeSistema()|raw }}
+                  {% endif %}
+              </div>
+              {% block body %}{% endblock %}
+            </div>
+        </div>
+        <br><br>
+        <footer class="bg-dark">
+            Copyright © <a class="text-white" target="_blank" href='http://www.devstudio.me'>devstudio.me</a> | <a href="https://www.facebook.com/devstudio.me/" class="text-white" target="_blank" title="Visita mi página en facebook">Ing. Julio Andrés Barrera C.</a> © {{ date().format('Y') }}
+        </footer>
+        <script>
+        {% block javascripts %}
+
+        {% endblock %}
+        </script>
+    </body>
+</html>

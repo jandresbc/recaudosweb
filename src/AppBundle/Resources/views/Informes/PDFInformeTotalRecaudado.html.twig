@@ -1,0 +1,104 @@
+{% extends 'baseInformes.html.twig' %}
+
+{% block body %}
+  <header>
+    <h3 class="cTomato">Informe Total Recaudado.</h3>
+
+    {% if app.session.get("rol") != 'Administrador Agencias' and app.session.get("rol") != 'Cajero' and app.session.get("rol") != 'Superusuario' %}
+      {{ config[0].getHeaderInformes|replace({"%title%":"Informe Total Recaudado."|upper})|raw }}
+    {% endif %}
+
+    <div class="text-left col-md-12"><span class="cTomato label">Fecha Informe</span>: {{ "now"|date("d/m/Y h:i:s A", "America/Bogota") }}
+    <span><span class="cTomato label">TOTAL</span>: ${{ totalRecaudado }}</span></div>
+  </header>
+  {% if pagos is defined %}
+    {% set total = 0 %}
+    <div class="table-responsive">
+      <table class="table table-sm table-striped table-bordered">
+        <tr class="bg-dark text-white">
+          <th>Item</th>
+          <th>Transacción</th>
+          <th>Cajero</th>
+          {% if app.session.get('nitAgencia') not in app.session.get('nitEmpresas') %}
+          <th>Identificación</th>
+          {% endif %}
+          {% if app.session.get('rol') == 'Superusuario' %}
+          <th>Empresa/Sede Agencia</th>
+          {% else %}
+          <th>Sede Agencia</th>
+          {% endif %}
+          <th>Municipio</th>
+          {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+          <th>NIU</th>
+          {% endif %}
+          <th>Factura</th>
+          <th>Concepto</th>
+          {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+          <th>Usuario</th>
+          {% endif %}
+          <th>Fecha / Hora Pago</th>
+          <th>Valor Pago</th>
+          <th>Método Pago</th>
+          <th>Tipo Pago</th>
+          {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+          <th>Banco</th>
+          <th>Nro./Fecha Consignación</th>
+          <!--<th>Nro. Cheque</th>-->
+          <th>Observaciones</th>
+          {% endif %}
+        </tr>
+        <tbody>
+          {% for index, pago in pagos %}
+            <tr>
+              <td>{{ index+1 }}</td>
+              <td>{{ pago['nro_transaccion'] }}</td>
+              <td>{{ pago['nombre_completo'] }}</td>
+              {% if app.session.get('nitAgencia') not in app.session.get('nitEmpresas') %}
+              <td>{{ pago['identificacion'] }}</td>
+              {% endif %}
+              {% if app.session.get('rol') == 'Superusuario' %}
+              <td class="text-left">{{ pago['razon_social']~" | "~ pago['nombre_sede'] }}</td>
+              {% else %}
+              <td class="text-left">{{ pago['nombre_sede'] }}</td>
+              {% endif %}
+              <td class="text-left">{{ pago['nom_poblad'] }}</td>
+              {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+              <td>{{ pago['matricula'] }}</td>
+              {% endif %}
+              <td>{{ pago['nro_factura'] }}</td>
+              <td class="text-left">{{ pago['concepto'] }}</td>
+              {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+              <td class="text-left">{{ pago['nombre_usuario']|title }}</td>
+              {% endif %}
+              <td>{{ pago['fecha_hora_pago']|date("d/m/Y h:i:s a") }}</td>
+              <td>${{ pago['vlr_pago'] }}</td>
+              <td>{{ pago['metodo_pago'] }}</td>
+              <td>{{ pago['tipo_pago'] }}</td>
+              {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+                <td>{{ pago['banco'] }}</td>
+                {% if pago['nro_consignacion'] != '' and pago['fecha_consignacion'] != ''%}
+                  <td>{{ pago['nro_consignacion']~" / "~pago['fecha_consignacion'] }}</td>
+                {% elseif pago['nro_consignacion'] != '' %}
+                  <td>{{ pago['nro_consignacion'] }}</td>
+                {% elseif pago['fecha_consignacion'] != '' %}
+                  <td>{{ pago['fecha_consignacion'] }}</td>
+                {% else %}
+                  <td></td>
+                {% endif %}
+                <!--<td>{{ pago['nro_cheque'] }}</td>-->
+                <td>{{ pago['observaciones'] }}</td>
+              {% endif %}
+            </tr>
+            {% set total = total + pago['vlr_pago'] %}
+          {% endfor %}
+          <!--<tr>
+            <th colspan="8">Total Recaudo</th>
+            <th>${# total #}</th>
+            <td colspan="6"></td>
+          </tr>-->
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+{% endblock %}

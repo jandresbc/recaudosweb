@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb bg-white">
+    <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+    <li class="breadcrumb-item">Consultas</li>
+    <li class="breadcrumb-item active" aria-current="page">Transacciones</li>
+  </ol>
+</nav>
+<div class="container-fluid" style="height:1000px;">
+    <div class="row justify-content-center">
+        <div class="col-md-12 text-center mb-3">
+            <header class='text-center'>
+                <h2>Consultar Transacciones.</h2>
+                <span class="help-block"><li class="fa fa-info-circle text-info"></li> Digite el número de la factura o el código de la transacción para realizar la consulta.</span>
+            </header>
+
+            <main class="text-center">
+              {{ form_start(form) }}
+                <div class="row mx-auto">
+                  <div class="col"></div>
+                  <div class="col-md-3">
+                    <div class="text-left label">{{ form_label(form.nroFactura) }}</div>
+                    <div class="text-left">{{ form_widget(form.nroFactura) }}</div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="text-left label">{{ form_label(form.codigoTransaccion) }}</div>
+                    <div class="text-left">{{ form_widget(form.codigoTransaccion) }}</div>
+                  </div>
+                  <div class="col"></div>
+                </div>
+                <br>
+                <div class="text-center">
+                  <input type="submit" class='btn btn-primary' value="Consultar" />
+                </div>
+              {{ form_end(form) }}
+            </main>
+        </div>
+        {% if mensajes is defined and mensajes is not null %}
+            <div id='mensaje' class="alert alert-warning alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              {{ mensajes }}
+            </div>
+        {% endif %}
+
+        <div id="mensajesValidacion">
+
+        </div>
+
+        {% if transacciones is defined %}
+          <div class="container-fluid">
+            <div class="table-responsive">
+              <table class="table table-sm table-striped">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Código Transacción</th>
+                    <th>Fecha Transacción</th>
+                    <th>Nro. Factura</th>
+                    <th>Usuario</th>
+                    <th>Valor Pago</th>
+                    <th>Sede Agencia</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item, trans in transacciones %}
+                    <tr>
+                        <td>{{ item+1 }}</td>
+                        <td>{{ trans.getIdTransaccion().getNroTransaccion() }}</td>
+                        <td>{{ trans.getIdTransaccion().getFechaHoraTransaccion()|date("d/m/Y h:i:s a") }}</td>
+                        <td>{{ trans.getIdFactura().getNroFactura() }}</td>
+                        <td>{{ trans.getIdFactura().getNombreUsuario() }}</td>
+                        <td>{{ trans.getVlrPago()|number_format(0,".",",") }}</td>
+                        <td>{{ trans.getIdTransaccion().getIdEmpresaSedeAgencia.getIdSedeAgencia() }}</td>
+                        <td>
+                          <a id="getRecibo" target="_blank" href="{{ path('getRecibo',{idTransaccion:trans.getIdTransaccion().getIdTransaccion() }) }}"><li class="fa fa-print cTomato"> Imprimir Recibo</li></a>
+                          {% if app.session.get('rol') == 'Administrador' or  app.session.get('rol') == 'Auditor' or app.session.get('rol') == 'Superusuario' %}
+                          <a id="hasTransaccion" href="{{ path('hasCodeSecurity',{idTransaction:trans.getIdTransaccion().getIdTransaccion() }) }}"><li class="fa fa-check-circle cTomato"> Validar Transacción</li></a>
+                          {% endif %}
+                        </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  $(document).ready(function(){
+   $("#hasTransaccion").click(function(e){
+      e.preventDefault();
+
+      var urlServiceRecibo = $("#hasTransaccion").attr("href");
+
+      $.get(urlServiceRecibo,function(response){
+        if(response.status == 1){
+          $("#mensajesValidacion").empty();
+          $("#mensajesValidacion").append('<span class="fa fa-check-circle m-3" style="color:green; font-size:34px;"> '+response.mensaje+' <br><span style="font-size:17px;">Código Seguridad: '+response.codigoSeguridad+'</span></span>');
+        }else if(response.status == 0){
+          $("#mensajesValidacion").empty();
+          $("#mensajesValidacion").append('<span class="fa fa-times-circle m-3" style="color:red; font-size:34px;"> '+response.mensaje+'</span>');
+        }
+      })
+    });
+  });
+{% endblock %}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="SedesAgencias" table="sedes_agencias">
+    <indexes>
+      <index name="id_divipola" columns="id_divipola"/>
+      <index name="id_agencia" columns="id_agencia"/>
+    </indexes>
+    <id name="idSedeAgencia" type="integer" column="id_sede_agencia">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="nombreSede" type="string" column="nombre_sede" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="codigoSede" type="integer" column="codigo_sede" nullable="false">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="direccion" type="string" column="direccion" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="telCel" type="integer" column="tel_cel" nullable="true">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <many-to-one field="idDivipola" target-entity="Divipola" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_divipola" referenced-column-name="divipola"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idAgencia" target-entity="Agencias" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_agencia" referenced-column-name="id_agencia"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

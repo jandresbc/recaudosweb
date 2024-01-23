@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('parametros_index') }}">Configuración del sistema</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Editar Parametro</li>
+      </ol>
+    </nav>
+
+    <div class="container-fluid" style="height:860px;">
+      <header class='text-center'>
+          <h2>Editar Parámetro.</h2>
+          <span class="help-block"><li class="fa fa-info-circle text-info"></li> Edita un parámetro. (* Campos requeridos.)</span>
+      </header>
+
+      <div>
+        {% if mensajes is defined %}
+          <div class="alert alert-warning w-50 mx-auto" role="alert">
+            {{ mensajes }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="row w-50 mx-auto">
+        {{ form_start(edit_form) }}
+            <div class="col-md-12 mx-auto mt-2">
+              <div class="text-left">{{ form_label(edit_form.urlLogoEmpresa) }}
+                <span class="help-block"><li class="fa fa-info-circle text-info"></li> URL del logo de la empresa de la cual se administran los recaudos. </span>
+              </div>
+              <div>{{ form_widget(edit_form.urlLogoEmpresa) }}</div>
+            </div>
+
+            <div class="col-md-12 mx-auto mt-1">
+              <div class="text-left">{{ form_label(edit_form.headerInformes) }}
+                <span class="help-block"><li class="fa fa-info-circle text-info"></li> Formato de encabezados de los informes que será generados en el sistema. Use la etiqueta '%title%' para insertar el titulo del informe en cualquier parte del encabezado.</span>
+              </div>
+              <div>{{ form_widget(edit_form.headerInformes) }}</div>
+            </div>
+
+            <div class="col-md-12 mx-auto mt-1">
+              <div class="text-left">{{ form_label(edit_form.porcentajeMetaRecaudo) }}
+                <span class="help-block"><li class="fa fa-info-circle text-info"></li> Este es el porcentaje que se fijó como meta para los periodos de recaudos.</span>
+              </div>
+              <div>{{ form_widget(edit_form.porcentajeMetaRecaudo) }}</div>
+            </div>
+
+            <div class="col-md-12 mx-auto mt-1">
+              <div class="text-left">{{ form_label(edit_form.idEmpresa) }}
+              </div>
+              <div>{{ form_widget(edit_form.idEmpresa) }}</div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-12"><input type="submit" class="btn btn-primary btn-sm" value="Editar" /></div>
+            </div>
+        {{ form_end(edit_form) }}
+      </div>
+
+      <div class="row ml-3">
+        <ul>
+            <li>
+                <a class="btn btn-info btn-sm" href="{{ path('parametros_index') }}">Volver a la lista</a>
+            </li>
+            {% if app.session.get('rol') == 'Superusuario' %}
+            <li>
+                {{ form_start(delete_form) }}
+                    <input type="submit" value="Eliminar" class="btn btn-danger btn-sm">
+                {{ form_end(delete_form) }}
+            </li>
+            {% endif %}
+        </ul>
+      </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+  $(document).ready(function(){
+    CKEDITOR.replace( 'appbundle_parametros_headerInformes' );
+  });
+{% endblock %}

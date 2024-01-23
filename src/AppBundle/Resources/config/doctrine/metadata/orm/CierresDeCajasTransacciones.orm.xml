@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="CierresDeCajasTransacciones" table="cierres_de_cajas_transacciones">
+    <indexes>
+      <index name="id_transaccion" columns="id_transaccion"/>
+      <index name="id_cierre_de_caja" columns="id_cierre_de_caja"/>
+    </indexes>
+    <id name="idCdcTransacciones" type="integer" column="id_cdc_transacciones">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <many-to-one field="idTransaccion" target-entity="Transacciones" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_transaccion" referenced-column-name="id_transaccion"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idCierreDeCaja" target-entity="CierresDeCajas" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_cierre_de_caja" referenced-column-name="id_cierre_caja"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

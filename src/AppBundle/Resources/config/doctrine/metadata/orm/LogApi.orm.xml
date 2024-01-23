@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\LogApi" table="log_api">
+    <indexes>
+      <index name="id_empresa" columns="id_empresa"/>
+      <index name="id" columns="id"/>
+    </indexes>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="host" type="string" column="host" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="service" type="string" column="service" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="header" type="string" column="header" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="method" type="string" column="method" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="arguments" type="string" column="arguments" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="fechaHoraPeticion" type="datetime" column="fecha_hora_peticion" nullable="true"/>
+    <many-to-one field="idEmpresa" target-entity="Empresas" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_empresa" referenced-column-name="id_empresa"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

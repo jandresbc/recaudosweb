@@ -1,0 +1,145 @@
+{% extends 'baseInformes.html.twig' %}
+{% block stylesheets %}
+<style>
+  #contenidoInforme{
+    font-size: 10px;
+  }
+
+  table, tr, td, th, tbody, thead, tfoot {
+    page-break-inside: avoid !important;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+</style>
+{% endblock %}
+{% block body %}
+  <header>
+    <h3 class="cTomato">Informe de Pagos de Periodos Anteriores.</h3>
+
+    {% if app.session.get("rol") != 'Administrador Agencias' and app.session.get("rol") != 'Cajero' and app.session.get("rol") != 'Superusuario' %}
+      {{ config[0].getHeaderInformes|replace({"%title%":"Informe de Pagos de Periodos Anteriores"|upper})|raw }}
+    {% endif %}
+
+    <div style="display:inline-block; margin-top:0px;" class="text-left"><span class="cTomato">Informe Generado el</span> {{ "now"|date("d/m/Y h:i:s A") }}</div>
+    <div style="display:inline-block;" class="text-left">
+      <span class="cTomato">Total Pagos</span>
+      <span>$ {{ totalPagosAnteriores | number_format(0,",",".") }}</span>
+      <span class="cTomato">Mes/Año Facturado</span>
+      <span>{{ app.request.get("appbundle_informecartera")["mesFacturacion"]~"/"~app.request.get("appbundle_informecartera")["anioFacturacion"] }}</span>
+    </div>
+  </header>
+
+  <div id="contenidoInforme" class="row">
+    <div class="col-md-12">
+    {% if pagosAnteriores is defined %}
+      <div class="table-responsive">
+        <table class="table table-sm table-striped table-bordered">
+            <tr class="bg-info text-white">
+              <th>Item</th>
+              {% if app.session.get('rol') == 'Superusuario' %}
+              <th>Empresa</th>
+              {% endif %}
+              <th>Sede Agencia</th>
+              <th>Municipio</th>
+              <th>Cajero</th>
+              <th>NIU</th>
+              <th>Factura</th>
+              {% if typeExport != 'pdf' %}
+              <th>Usuario</th>
+              {% endif %}
+              <!--<th>Transacción</th>-->
+              <th>Fecha / Hora Pago</th>
+              <th>Valor Pago</th>
+              <!--<th>Saldo</th>-->
+              <th>Método Pago</th>
+              <!--<th>Tipo Pago</th>-->
+              <th>Banco</th>
+              <th>Fecha Consiganción o de Operación</th>
+              <th>Nro. Consiganción o de la Operación</th>
+              <!--<th>Nro. Cheque</th>-->
+              <th>Observaciones</th>
+            </tr>
+            <tbody>
+              {% for index, pagos in pagosAnteriores %}
+                <tr>
+                  <td>{{ index+1 }}</td>
+                  {% if app.session.get('rol') == 'Superusuario' %}
+                  <td>{{ pagos["razon_social"] }}</td>
+                  {% endif %}
+                  <td>{{ pagos["nombre_sede"] }}</td>
+                  <td>{{ pagos["nom_poblad"] }}</td>
+                  <td>{{ pagos["nombre_completo"] }}</td>
+                  <td>{{ pagos["matricula"] }}</td>
+                  <td>{{ pagos["nro_factura"] }}</td>
+                  {% if typeExport != 'pdf' %}
+                  <td>{{ pagos["nombre_usuario"] }}</td>
+                  {% endif %}
+                  <!--<td>{{ pagos["nro_transaccion"] }}</td>-->
+                  <td>{{ pagos["fecha_hora_pago"] | date("d/m/Y h:i:s A") }}</td>
+                  <td>$ {{ pagos["vlr_pago"] | number_format(0,",",".") }}</td>
+                  <!--<td>$ {{ pagos["saldo"] | number_format(0,",",".") }}</td>-->
+                  <td>{{ pagos["metodo_pago"] }}</td>
+                  <!--<td>{{ pagos["tipo_pago"] }}</td>-->
+                  <td>{{ pagos["banco"] }}</td>
+                  <td>{{ pagos["fecha_consignacion"] | date("d/m/Y H:i:s") }}</td>
+                  <td>{{ pagos["nro_consignacion"] }}</td>
+                  <!--<td>{{ pagos["nro_cheque"] }}</td>-->
+                  <td style="font-size: 10px;" width="100">{{ pagos["observaciones"] }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    {% endif %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+    {% if cartera is defined %}
+      <div class="table-responsive">
+        <h4 class="text-left">Cartera.</h4>
+        <table class="table table-sm table-striped table-bordered">
+          <tr class="bg-info text-white">
+            <th>Nro. Factura</th>
+            <th>NIU</th>
+            <th>Valor Factura / Saldo pendiente</th>
+            <th>Periodo de Facturación</th>
+            <th>Meses Atrasados</th>
+            {% if cartera[0]['Municipio'] is defined %}
+            <th>Municipio</th>
+            {% endif %}
+          </tr>
+          <tbody>
+          {% set totalCartera = 0 %}
+
+          {% for deudor in cartera %}
+            {% if deudor["nroFactura"] != 0 %}
+              <tr>
+                <td>{{ deudor["nroFactura"] }}</td>
+                <td>{{ deudor["niu"] }}</td>
+                <td>$ {{ deudor["valorFactura"] | number_format(0,",",".") }}</td>
+                <td>{{ deudor["mesAnioFacturado"] | replace({"~":" - "}) }}</td>
+                <td>{{ deudor["mesesAtrasados"] }}</td>
+                {% if deudor['Municipio'] is defined %}
+                <td>{{ deudor["Municipio"] }}</td>
+                {% endif %}
+              </tr>
+              {% set totalCartera = totalCartera + deudor["valorFactura"] %}
+            {% endif %}
+          {% endfor %}
+            <tr>
+              <th colspan="2">Total Cartera</th>
+              <th>$ {{ totalCartera | number_format(0,",",".") }}</th>
+              <td colspan="3"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+    </div>
+  </div>
+
+{% endblock %}

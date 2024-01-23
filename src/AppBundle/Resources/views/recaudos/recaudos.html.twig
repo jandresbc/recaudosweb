@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb bg-white">
+    <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Recaudos</li>
+  </ol>
+</nav>
+<div class="row text-center Content">
+    <div class="col-md-12 text-left ml-3">
+        <a href="{{ path('Cajas') }}" class="btn btn-info btn-sm">Crear Caja</a>
+        <a href="{{ path('historialCajas') }}" class="btn btn-info btn-sm">Ver Historial Cajas</a>
+        {% if app.session.get('nitAgencia') in app.session.get('nitEmpresas') %}
+          <a class="btn btn-success btn-sm" href="{{ path('CruceDeCuentas') }}">Cruce de Cuentas</a>
+        {% endif %}
+    </div>
+    {% if mensajes is defined and mensajes is not null %}
+        <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 mx-auto" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {{ mensajes }}
+        </div>
+    {% endif %}
+    {% for id,caja in cajas %}
+      <div class="col-md-3 col-sm-4 col-xs-12">
+        <div id="Caja{{ caja.getIdCaja() }}" class="card bg-light" style="width: 18rem;">
+          <div class="col-md-12">
+            <span class="p-2 float-left cTomato">{{caja.getIdEmpresaSedeAgencia().getIdSedeAgencia().getNombreSede()}}</span>
+            <a href="{{ path('ArchivarCajas',{idCaja:caja.getIdCaja()}) }}" title="Archivar / Eliminar" class="p-2 float-right"><li class="fa fa-archive text-info"></li></a>
+          </div>
+          {% if app.session.get("rol") != 'Inactivo' %}
+            <div class="m-2 cTomato block">{{ caja.getIdEmpresaSedeAgencia().getIdEmpresa().getRazonSocial() }}</div>
+          {% endif %}
+          <div class="card-body">
+            <h3 class="card-title cTomato">{{ caja.getNombreCaja() }}</h3>
+            <div style='text-align: left; font-size:14px;' class="card-text text-muted">Creación: {{ caja.getFechaHoraCreacion()|date("d M Y h:i:s") }}</div>
+            <div style='text-align: right;' class="mt-2">
+                {% if caja.getSessionActiva() == 1 %}
+                    <a href="{{ path('transacciones',{idCaja:caja.getIdCaja()}) }}" id="reanudar" class="btn btn-primary btn-sm">Reanudar</a>
+                    <a href="{{ path('CierresDeCajas',{idCaja:caja.getIdCaja()}) }}" id="cerrar" class="btn btn-primary btn-sm">Cerrar Sesión</a>
+                {% elseif caja.getSessionActiva() == 0 %}
+                    <a href="{{path('transacciones',{idCaja : caja.getIdCaja()}) }}" id="iniciar" class="btn btn-primary btn-sm">Iniciar</a>
+                {% endif %}
+                
+                {% if app.session.get('rol') == 'Superusuario' or app.session.get('nitAgencia') in app.session.get('nitEmpresas') or app.session.get('nitAgencia') == '830131993-1' %}
+                  <a href="{{ path('subirPagos',{idCaja:caja.getIdCaja()}) }}" class="btn btn-warning btn-sm text-light mt-1">Subir Pagos .csv</a>
+                {% endif %}
+
+                {% if app.session.get("rol") != 'Inactivo' %}
+                  <div class="m-2 cTomato block"><span class="label">Cajero</span>: {{ caja.getIdUsuario().getNombreCompleto() }}</div>
+                {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}

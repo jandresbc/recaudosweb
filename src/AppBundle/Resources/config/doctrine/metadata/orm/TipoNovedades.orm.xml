@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TipoNovedades" table="tipo_novedades">
+    <indexes>
+      <index name="id_tipo_novedad" columns="id_tipo_novedad"/>
+    </indexes>
+    <id name="idTipoNovedad" type="integer" column="id_tipo_novedad">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="tipoNovedad" type="string" column="tipo_novedad" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+  </entity>
+</doctrine-mapping>

@@ -1,0 +1,14 @@
+novedades_index:
+    path:     /
+    defaults: { _controller: "AppBundle:Novedades:index" }
+    methods:  [GET,POST]
+
+novedades_show:
+    path:     /{idNovedad}/show
+    defaults: { _controller: "AppBundle:Novedades:show" }
+    methods:  GET
+
+novedades_new:
+    path:     /new
+    defaults: { _controller: "AppBundle:Novedades:new" }
+    methods:  [GET, POST]

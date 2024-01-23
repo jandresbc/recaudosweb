@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb bg-white">
+    <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+    <li class="breadcrumb-item">Maestros</li>
+    <li class="breadcrumb-item"><a href="{{ path('facturas_index') }}">Facturación</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Crear Factura - Abonos</li>
+  </ol>
+</nav>
+<div class="container-fluid" style="height:920px;">
+    <header class='text-center'>
+        <h2>Crear Factura / Abonos.</h2>
+        <span class="help-block"><li class="fa fa-info-circle text-info"></li> Crea una nueva factura o un abono a una factura existente. (* Campos requeridos.)</span>
+    </header>
+
+    {% if mensajes is defined and mensajes is not null%}
+        <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ mensajes }}
+        </div>
+    {% endif %}
+
+    <div class="container w-50">
+    {{ form_start(form) }}
+        <div class="row">
+          <div class="col-md-6 text-right">{{ form_label(form.matricula) }}</div>
+          <div class="col-md-6 text-left">
+            {{ form_widget(form.matricula) }}
+            <button type="button" id="searchNiu" class="btn btn-info btn-sm d-inline-block"><li class="fa fa-search"></li></button>
+          </div>
+          <div id="responseSearch" class="mx-auto m-1"></div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-md-6 text-right">{{ form_label(form.nroFactura) }}</div>
+          <div class="col-md-6 text-left">{{ form_widget(form.nroFactura) }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 text-right">{{ form_label(form.nombreUsuario) }}</div>
+          <div class="col-md-6">{{ form_widget(form.nombreUsuario) }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 text-right">{{ form_label(form.concepto) }}</div>
+          <div class="col-md-6">{{ form_widget(form.concepto) }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 text-right">{{ form_label(form.valorFactura) }}</div>
+          <div class="col-md-6">{{ form_widget(form.valorFactura) }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 text-right">{{ form_label(form.fechaVencimiento) }}</div>
+          <div class="col-md-6">{{ form_widget(form.fechaVencimiento) }}</div>
+        </div>
+        <div class="row border-top m-2">
+          <div class="col-md-6 mt-2">
+            <div class="text-right">{{ form_label(form.mesFacturado) }}</div>
+            <div>{{ form_widget(form.mesFacturado) }}</div>
+          </div>
+          <div class="col-md-6 mt-2">
+            <div class="text-left">{{ form_label(form.anioFacturado) }}</div>
+            <div>{{ form_widget(form.anioFacturado) }}</div>
+          </div>
+        </div>
+        <div class="row border-top m-2">
+          <div class="col-md-6 mt-2">
+            <div class="text-right">{{ form_label(form.observaciones) }} <span class="help-block"><li class="fa fa-info-circle text-info"></li> Opcional</span></div>
+            <div>{{ form_widget(form.observaciones) }}</div>
+          </div>
+          <div class="col-md-6 mt-2">
+            <div class="text-left">{{ form_label(form.mesesAtrasados) }} <span class="help-block"><li class="fa fa-info-circle text-info"></li> Opcional</span></div>
+            <div>{{ form_widget(form.mesesAtrasados) }}</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mt-2">
+            <div class="text-right">{{ form_label(form.periodoActual) }}
+              <span class="help-block"><li class="fa fa-info-circle text-info"></li> Esta opción es para determinar si esta nueva factura es del periodo actual de recaudo y desea que se permita recaudar por las agencias, en el módulo de Punto de Recaudo. </span>
+            </div>
+            <div>{{ form_widget(form.periodoActual) }}</div>
+          </div>
+          <div class="col-md-6 mt-1">
+            <div class="text-left">{{ form_label(form.isAbono) }}
+              <span class="help-block"><li class="fa fa-info-circle text-info"></li> Seleccione 'Si', si desea crear un Abono de una Factura existente.</span>
+            </div>
+            <div>{{ form_widget(form.isAbono) }}</div>
+
+            <div class="text-left">{{ form_label(form.idEmpresa) }}</div>
+            <div class="text-left">{{ form_widget(form.idEmpresa) }}</div>
+          </div>
+        </div>
+        <!--<div class="row mt-3">
+          <div class="col-md-6 text-right">{{ form_label(form.idEmpresa) }}</div>
+          <div class="col-md-6">{{ form_widget(form.idEmpresa) }}</div>
+        </div>-->
+        <br>
+        <div class="row">
+          <div class="col-md-12"><input type="submit" class="btn btn-primary btn-sm" value="Crear" /></div>
+        </div>
+    {{ form_end(form) }}
+    </div>
+    <div class="row ml-3">
+      <ul>
+          <li>
+              <a class="btn btn-info btn-sm" href="{{ path('facturas_index') }}">Volver a la lista</a>
+          </li>
+      </ul>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+  $(document).ready(function(){
+    var url = getAbsolutePath().replace("/facturas","");
+    $("#searchNiu").click(function(e){
+      e.preventDefault();
+      $("#responseSearch").html("<img id='loading' src='{{ asset("bundles/app/img/loader.gif")|e('js') }}' alt='loading' >");
+
+      $.get(url+"getInfoFactura",{
+        method : 'GET',
+        niu : $("#appbundle_facturas_matricula").val()
+      },function(response){
+        var len = response.length-1;
+
+        if($.isArray(response)){
+          if(response[len].status == 1){
+            $("#loading").remove();
+
+            $("#appbundle_facturas_nroFactura").val(response[len].nroFactura);
+            $("#appbundle_facturas_nombreUsuario").val(response[len].nombreUsuario);
+            $("#appbundle_facturas_concepto").val(response[len].concepto);
+            $("#appbundle_facturas_valorFactura").val(response[len].valorFactura);
+            $("#appbundle_facturas_mesesAtrasados").val(response[len].mesesAtrasados);
+          }
+        }else if(response.status == 0){
+          $("#loading").remove();
+          $("#responseSearch").html("<div class='alert alert-warning' role='alert'>"+response.error+"<button type='button' class='close ml-1' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+        }
+      });
+    });
+  });
+{% endblock %}

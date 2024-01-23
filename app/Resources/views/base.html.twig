@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Redylab Recaudos{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-png" href="{{ asset('favicon.png') }}" />
+
+        <!-- Jquery -->
+        <script src="{{ asset('bundles/app/js/bower_components/jquery/dist/jquery.min.js') }}" type="application/javascript"></script>
+
+        <!-- Bootstrap -->
+        <link href="{{ asset('bundles/app/js/bower_components/bootstrap/dist/css/bootstrap.min.css') }}" type="text/css" rel='stylesheet' media='screen'/>
+        <script src="{{ asset('bundles/app/js/bower_components/bootstrap/dist/js/bootstrap.min.js') }}" type="application/javascript"></script>
+
+        <!-- FontAwesome 5.0.8 --->
+        <link href="{{ asset('bundles/app/js/bower_components/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css') }}" rel="stylesheet"/>
+
+        <!-- dataTables -->
+        <link href="{{ asset('bundles/app/js/bower_components/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"/>
+        <script src="{{ asset('bundles/app/js/bower_components/datatables.net/js/jquery.dataTables.min.js') }}" type="application/javascript"></script>
+
+        <!-- jAlert 4.0 Jquery -->
+        <link rel="stylesheet" href="{{ asset('bundles/app/js/jAlert/dist/jAlert.css') }}" />
+        <script src="{{ asset('bundles/app/js/jAlert/dist/jAlert.min.js') }}"></script>
+        <script src="{{ asset('bundles/app/js/jAlert/dist/jAlert-functions.min.js') }}"> //optional!!</script>
+
+        <!-- moment -->
+        <script src="{{ asset('bundles/app/js/bower_components/moment/min/moment.min.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/bower_components/moment/locale/es.js') }}" type="application/javascript"></script>
+
+        <!-- select2 -->
+        <link href="{{ asset('bundles/app/js/bower_components/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
+        <!-- tema bootstrap select2 -->
+        <link rel="stylesheet" href="{{ asset('bundles/app/js/bower_components/select2-bootstrap-theme/dist/select2-bootstrap.min.css') }}">
+        <script src="{{ asset('bundles/app/js/bower_components/select2/dist/js/select2.full.min.js') }}" type="application/javascript"></script>
+
+        <!-- chartjs -->
+        <script src="{{ asset('bundles/app/js/bower_components/chart.js/dist/Chart.min.js') }}" type="application/javascript"></script>
+
+        <link href="{{ asset('bundles/app/css/styles.css') }}" type="text/css" rel='stylesheet' media='screen'/>
+        <script src="{{ asset('bundles/app/js/app.js') }}" type="application/javascript"></script>
+        <!-- downloadjs -->
+        <script type="text/javascript" src="{{ asset('bundles/app/js/download.js') }}"></script>
+
+        {% if dashboard is defined or novedades is defined %}
+          <!-- Angular 1.6 -->
+          <!-- Angular Material style sheet -->
+          <link rel="stylesheet" href="{{ asset('bundles/app/js/bower_components/angular-material/angular-material.min.css') }}">
+          <script src="{{ asset('bundles/app/js/bower_components/angular/angular.min.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/bower_components/angular-resource/angular-resource.min.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/bower_components/angular-animate/angular-animate.min.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/bower_components/angular-messages/angular-messages.min.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/bower_components/angular-aria/angular-aria.min.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/bower_components/angular-material/angular-material.min.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/angular/app.config.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/angular/app.module.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/angular/transacciones/transacciones.controller.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/angular/dashboard/dashboard.controller.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/angular/novedades/novedades.controller.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/angular/businessIntelligence/business.controller.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/angular/angular-pagination/pagination.controller.js') }}" type="application/javascript"></script>
+          <script src="{{ asset('bundles/app/js/angular/app.api.js') }}" type="application/javascript"></script>
+        {% endif %}
+
+        <!-- Idle jquery - Validar Inactividad.-->
+        <script type="text/javascript" src="{{ asset('bundles/app/js/jquery_idle/jquery.idle.js') }}"></script>
+
+        <!-- fullscreenjs -->
+        <script type="text/javascript" src="{{ asset('bundles/app/js/fullscreenjs/fullscreenjs.js') }}"></script>
+
+        <!-- ckeditor -->
+        <script type="text/javascript" src="{{ asset('bundles/app/js/bower_components/ckeditor/ckeditor.js') }}"></script>
+
+    </head>
+    <body>
+        <div class='text-center row'>
+            <div class='col-md-12 col-xs-12' id="HeaderMenu">
+              {% if mensajes_sistema is defined %}
+                {% if mensajes_sistema is not null %}
+                  <div id='mensajeSistema' class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ mensajes_sistema }}
+                  </div>
+                {% endif %}
+              {% endif %}
+
+              {% if login is not defined and puntoRecaudo is not defined %}
+                  <div class="header text-center border-bottom row">
+                      <!--<div class="col-md-6 col-xs-12 text-left">
+                          <img class="img-fluid" src='http://www.energiaputumayo.com/encabezados/cabezote_graleep2016_new_1.jpg' height="75" width="500">
+                      </div>-->
+                      <div class="col-md-3 col-xs-2 text-center">
+                          {% if app.session.get('nitAgencia') in app.session.get("nitEmpresas") %}
+                            {{ app.session.get('configuracionapps')[0].getMensajeSistema()|raw }}
+                          {% endif %}
+                      </div>
+                      <div class="col-md-6 col-xs-6 text-center">
+                          <h1 class="d-inline-block" style="margin:0px;"><b><span>Sistema de Recaudos Web</span></b> <span style="margin:0px; font-size:15px;">Versión 1.0</span></h1>
+                      </div>
+                      <div class="col-md-3 col-xs-2 text-center">
+                          {% if app.session.get('nitAgencia') in app.session.get("nitEmpresas") %}
+                            {{ app.session.get('configuracionapps')[0].getMensajeSistema()|raw }}
+                          {% endif %}
+                      </div>
+                  </div>
+                  <nav class="navbar navbar-expand-lg navbar-light border-bottom" style="margin-bottom: 4px;">
+                    <a class="navbar-brand text-dark" href="http://www.devstudio.me/" target="_blank">Redylab</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                      <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                          <a class="nav-link" href="{{ path('dashboard') }}">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        {% if app.session.get('rol') != 'Administrador' and app.session.get('rol') != 'Administrador Agencias' and app.session.get('rol') != 'Inactivo' and app.session.get('rol') != 'Auditor' %}
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ path('recaudos') }}">Recaudos</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Informes
+                          </a>
+                          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if app.session.get('rol') == 'Cajero' or app.session.get('rol') == 'Superusuario'  %}
+                            <a class="dropdown-item" href="{{ path('InformeCierresDeCajas') }}">Cierres de Cajas</a>
+                            {% endif %}
+                            {% if app.session.get('rol') == 'Administrador' or app.session.get('rol') == 'Administrador Agencias' or app.session.get('rol') == 'Superusuario' or app.session.get('rol') == 'Auditor' %}
+                            <a class="dropdown-item" href="{{ path('InformeTotalRecaudo') }}">Total Recaudado</a>
+                            {% endif %}
+                            {% if app.session.get('rol') == 'Administrador' or app.session.get('rol') == 'Superusuario' or app.session.get('rol') == 'Auditor' %}
+                            <a class="dropdown-item" href="{{ path('InformeRecaudoMatricula') }}">Recaudos por NIU (Matrícula)</a>
+                            <a class="dropdown-item" href="{{ path('InformeCartera') }}">Cartera</a>
+                            <a class="dropdown-item" href="{{ path('InformePagosPeriodosAnteriores') }}">Pagos de Periodos Anteriores</a>
+                            <a class="dropdown-item" href="{{ path('InformeNovedades') }}">Novedades</a>
+                            {% endif %}
+                            {% if app.session.get('nitAgencia') == '800249355-1' and app.session.get('rol') == 'Administrador Agencias' or app.session.get('rol') == 'Superusuario' %}
+                              <a class="dropdown-item" href="{{ path('ExportInformeSupergiros') }}">Informe SuperGiros (xls)</a>
+                            {% endif %}
+                          </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Consultas
+                          </a>
+                          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ path('consultasTransacciones') }}">Transacciones</a>
+                            {% if app.session.get('rol') == 'Administrador' or app.session.get('rol') == 'Administrador Agencias' or app.session.get('rol') == 'Superusuario' or app.session.get('rol') == 'Auditor'%}
+                            <a class="dropdown-item" href="{{ path('consultaTotalRecaudado') }}">Total Recaudado</a>
+                            {% endif %}
+                          </div>
+                        </li>
+                        {% if app.session.get('rol') != 'Cajero' and app.session.get('rol') != 'Inactivo' and app.session.get('rol') != 'Auditor' %}
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Maestros
+                          </a>
+                          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if app.session.get('rol') == 'Superusuario' or app.session.get('rol') == 'Administrador' %}
+                            <a class="dropdown-item" href="{{ path('agencias_index') }}">Agencias</a>
+                            {% endif %}
+                            <a class="dropdown-item" href="{{ path('sedesagencias_index') }}">Sedes de Agencias</a>
+                            <a class="dropdown-item" href="{{ path('usuarios_index') }}">Usuarios</a>
+                            {% if app.session.get('rol') == 'Superusuario' or app.session.get('rol') == 'Administrador' %}
+                            <a class="dropdown-item" href="{{ path('historialCajas',{'admin':'true'}) }}">Historial Cajas</a>
+                            <a class="dropdown-item" href="{{ path('Permisos') }}">Asignar Permisos</a>
+                            <a class="dropdown-item" href="{{ path('auditoria_index') }}">Auditoría</a>
+                            <a class="dropdown-item" href="{{ path('novedades_index') }}">Novedades</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ path('facturas_index') }}">Facturación</a>
+                            {% endif %}
+                          </div>
+                        </li>
+                        {% endif %}
+                        {% if app.session.get('rol') == 'Administrador' or app.session.get('rol') == 'Superusuario' %}
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ path('parametros_index') }}">Configuración Sistema</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ path('setpassword') }}">Cambiar Contraseña</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ path('logout',{usuario:app.session.get('identificacion')}) }}" title="Salir del Aplicativo"><span class="fa fa-sign-out-alt fa-1x"> Salir</span></a>
+                        </li>
+                      </ul>
+                      <span class="text-right colorText"><b>Bienvenido</b>, {{ app.session.get('nombreUsuario') }}</span>
+                    </div>
+                  </nav>
+                  <input type='hidden' id='logout' value="{{ path('logout',{usuario:app.session.get('identificacion')}) }}">
+                {% endif %}
+            </div>
+            <div class="col-md-12 col-xs-12">
+              {% block body %}{% endblock %}
+            </div>
+        </div>
+        <script>
+        {% block javascripts %}
+          $(document).ready(function() {
+            $('.select2').select2({
+              width : 'resolve',
+              theme : 'bootstrap'
+            });
+
+            getAbsolutePath = function(){
+                var loc = window.location;
+                var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+            		var url = loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length)).replace("/admin","");
+
+                return url;
+            }
+
+            {% if login is not defined and puntoRecaudo is not defined and dashboard is not defined %}
+              $(document).idle({
+                onIdle: function(){
+                  location.href = $('#logout').val();
+                },
+                idle: 1800000 //Media hora de inactividad.
+              })
+            {% endif %}
+          });
+        {% endblock %}
+        </script>
+        <footer class="bg-dark">
+            Copyright © <a class="text-white" target="_blank" href='http://www.devstudio.me'>devstudio.me</a> | <a href="https://www.facebook.com/devstudio.me/" class="text-white" target="_blank" title="Visita mi página en facebook">Ing. Julio Andrés Barrera C.</a> © {{ date().format('Y') }}
+        </footer>
+    </body>
+</html>

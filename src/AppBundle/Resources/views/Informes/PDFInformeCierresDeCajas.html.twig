@@ -1,0 +1,83 @@
+{% extends 'baseInformes.html.twig' %}
+
+{% block body %}
+  <header>
+    <h3 class="cTomato">Informe de Recaudos.</h3>
+
+    {% if app.session.get("rol") != 'Administrador Agencias' and app.session.get("rol") != 'Cajero' and app.session.get("rol") != 'Superusuario' %}
+      {{ config[0].getHeaderInformes|replace({"%title%":"Informe de Recaudos."|upper})|raw }}
+    {% endif %}
+  </header>
+  <div class="container-fluid" style="height: 100%;">
+    <table class="table table-sm">
+      <tbody>
+        <tr>
+          <th class="text-left">Caja: </th>
+          <td class="text-left">{{ cajas[0].getIdCaja().getNombreCaja() }}</td>
+          <th class="text-left">Nro documento: </th>
+          <td class="text-left">{{ cajas[0].getNroDocumento() }}</td>
+          <th class="text-left">Total Recaudo: </th>
+          <td class="text-left">${{ cajas[0].getTotalRecaudoCaja() }}</td>
+          <th class="text-left">Total Colillas: </th>
+          <td class="text-left">
+          {% if cajas[0].getTotalColillas() is null %}
+                0
+          {% else %}
+            {{ cajas[0].getTotalColillas() }}
+          {% endif %}
+          </td>
+          <th class="text-left">Fecha de Cierre: </th>
+          <td class="text-left">{{ cajas[0].getFechaHoraCierre()|date('d/m/Y h:i:s a') }}</td>
+        </tr>
+        <tr>
+          <th class="text-left">Cajero:</th>
+          <td class="text-left">{{ cajas[0].getIdCaja().getIdUsuario().getNombreCompleto() }}</td>
+          <th class="text-left">Identificación:</th>
+          <td class="text-left">{{ cajas[0].getIdCaja().getIdUsuario().getIdentificacion() }}</td>
+          <th class="text-left">Sede Agencia:</th>
+          <td class="text-left">{{ cajas[0].getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia().getNombreSede() }}</td>
+          <th class="text-left">Agencia: </th>
+          <td class="text-left" colspan="2">{{ cajas[0].getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia().getIdAgencia().getNombreAgencia() }}</td>
+          <td colspan="2">&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="text-left cTomato"><h4>Pagos</h4></div>
+    <table class="table table-striped table-bordered table-sm">
+      <tr class="bg-dark text-white">
+        <th>Item</th>
+        <th>Código Transacción</th>
+        <th>NIU</th>
+        <th>Nro. Factura</th>
+        <th>Vlr. Pagado</th>
+        <th>Fecha Hora Pago</th>
+        <th>Tipo Pago</th>
+      </tr>
+      <tbody>
+        {% set pagos = 0 %}
+        {% for item,transaccion in transacciones %}
+          <tr>
+            <td>{{ item+1 }}</td>
+            <td>{{ transaccion.getIdTransaccion.getNroTransaccion() }}</td>
+            <td>{{ transaccion.getIdFactura().getMatricula() }}</td>
+            <td>{{ transaccion.getIdFactura().getNroFactura() }}</td>
+            <td>${{ transaccion.getVlrPago() }}</td>
+            <td>{{ transaccion.getFechaHoraPago()|date('d/m/Y h:i:s a') }}</td>
+            <td>{{ transaccion.getIdTipoPago() }}</td>
+          </tr>
+          {% set pagos = pagos + transaccion.getVlrPago() %}
+          
+          {% for trans in transaccion %}
+
+          {% endfor %}
+        {% endfor %}
+        <tr>
+          <th colspan="4" class="text-right">Total Pagos: </th>
+          <th>${{ pagos }}</th>
+          <td colspan="2"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+{% endblock %}

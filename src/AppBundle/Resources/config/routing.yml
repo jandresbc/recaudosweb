@@ -1,0 +1,27 @@
+app_facturas:
+    resource: "@AppBundle/Resources/config/routing/facturas.yml"
+    prefix:   /facturas
+
+app_parametros:
+    resource: "@AppBundle/Resources/config/routing/parametros.yml"
+    prefix:   /parametros
+
+app_agencias:
+    resource: "@AppBundle/Resources/config/routing/agencias.yml"
+    prefix:   /agencias
+
+app_sedesagencias:
+    resource: "@AppBundle/Resources/config/routing/sedesagencias.yml"
+    prefix:   /sedesagencias
+
+app_usuarios:
+    resource: "@AppBundle/Resources/config/routing/usuarios.yml"
+    prefix:   /usuarios
+
+app_auditoria:
+    resource: "@AppBundle/Resources/config/routing/auditoria.yml"
+    prefix:   /auditoria
+
+app_novedades:
+    resource: "@AppBundle/Resources/config/routing/novedades.yml"
+    prefix:   /novedades

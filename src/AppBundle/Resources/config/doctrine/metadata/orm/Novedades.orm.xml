@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Novedades" table="novedades">
+    <indexes>
+      <index name="id_usuario" columns="id_usuario"/>
+      <index name="id_tipo_novedad" columns="id_tipo_novedad"/>
+      <index name="id_novedad" columns="id_novedad"/>
+    </indexes>
+    <id name="idNovedad" type="integer" column="id_novedad">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="txHash" type="string" column="tx_hash" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="fechaHoraNovedad" type="datetime" column="fecha_hora_novedad" nullable="false"/>
+    <field name="moduloAfectado" type="string" column="modulo_afectado" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="identificadorData" type="string" column="identificador_data" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="anteriorData" type="string" column="anterior_data" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="observaciones" type="string" column="observaciones" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <many-to-one field="idUsuario" target-entity="Usuarios" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_usuario" referenced-column-name="id_usuario"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idTipoNovedad" target-entity="TipoNovedades" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_tipo_novedad" referenced-column-name="id_tipo_novedad"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

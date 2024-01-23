@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EmpresasSedesAgencias" table="empresas_sedes_agencias">
+    <indexes>
+      <index name="id_empresa" columns="id_empresa"/>
+      <index name="id_sede_agencia" columns="id_sede_agencia"/>
+    </indexes>
+    <id name="idEmpresaSedeAgencia" type="integer" column="id_empresa_sede_agencia">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <many-to-one field="idEmpresa" target-entity="Empresas" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_empresa" referenced-column-name="id_empresa"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idSedeAgencia" target-entity="SedesAgencias" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_sede_agencia" referenced-column-name="id_sede_agencia"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

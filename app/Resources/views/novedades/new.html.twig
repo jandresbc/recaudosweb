@@ -1,0 +1,179 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item">Maestros</li>
+        <li class="breadcrumb-item"><a href="{{ path('novedades_index') }}">Novedades</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Crear Novedad</li>
+      </ol>
+    </nav>
+    <div class="container-fluid" style="height:1500px;" ng-app='recaudos' ng-controller='NovedadesController as vm'>
+
+      <header class='text-center'>
+          <h2>Crear Novedad.</h2>
+          <span class="help-block"><li class="fa fa-info-circle text-info"></li> Crea una nueva novedad. (* Campos requeridos.)</span>
+      </header>
+
+      {% if mensajes is defined and mensajes is not null%}
+          <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              {{ mensajes }}
+          </div>
+      {% endif %}
+
+      <div class="w-75 mx-auto">
+        {{ form_start(form) }}
+          <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+              <div class="text-left ml-2">{{ form_label(form.moduloAfectado) }}</div>
+              <div>{{ form_widget(form.moduloAfectado) }}</div>
+            </div>
+            <div class="col-md-5 text-left">
+              <div class="text-left">
+                {{ form_label(form.nroFactura) }}
+              </div>
+              <div class="d-inline-block">{{ form_widget(form.nroFactura) }}</div>
+              <div class="d-inline-block ml-2"><button type="button" id="buscarInfoFactura" ng-click="vm.getInfoPagos()" class="btn btn-info btn-sm" ><span class="fa fa-search"></span></button></div>
+            </div>
+            <div class="col-md-1 text-left" style="padding:0px;"><div id="responseSearch" ng-if="vm.loader == true" class="mt-4 text-left"><img id='loading' src='{{ asset("bundles/app/img/loader.gif") }}' alt='loading' ></div></div>
+          </div>
+        {{ form_end(form) }}
+      </div>
+
+      <div class="m-10 p-10" id="datosPagos" ng-if="vm.data.length > 0">
+        <hr>
+        <md-content>
+          <md-list flex>
+            <md-list-item class="md-2-line" ng-repeat="pago in vm.data">
+              <!--<md-checkbox ng-model=""></md-checkbox>-->
+              <div class="md-list-item-text" layout="column">
+                <div class="row p-2 bg-info text-light border-bottom">
+                  <div class="col text-left ml-2"><b>Información del Pago. #{[{ $index+1 }]}</b></div>
+                  <div class="col text-right mr-2"><b>Fecha / Hora Pago:</b> {[{ pago.fecha_hora_pago | date }]}</div>
+                </div>
+
+                <div class="row p-1 text-left">
+                  <div class="col-md-3"><b>Nro. Factura</b>: {[{ pago.nro_factura }]}</div>
+                  <div class="col-md-2"><b>NIU (Matrícula)</b>: {[{ pago.matricula }]}</div>
+                  <div class="col-md-4"><b>Nombre Usuario</b>: {[{ pago.nombre_usuario }]}</div>
+                  <div class="col-md-3"><b>Mes / Año Facturado</b>: {[{ pago.mes_facturado+" / "+pago.anio_facturado }]}</div>
+                </div>
+                <div class="row p-1 text-left">
+                  <div class="col-md-3"><b>Valor Pagado</b>: {[{ pago.vlr_pago | currency }]}</div>
+                  <div class="col-md-2"><b>Saldo</b>: {[{ pago.saldo | currency }]}</div>
+                  <div class="col-md-4"><b>Tipo Pago</b>: {[{ pago.tipo_pago }]}</div>
+                  <div class="col-md-3"><b>Método Pago</b>: {[{ pago.metodo_pago }]}</div>
+                </div>
+                <div class="row border-top p-1">
+                  <div class="col-md-6 text-right"><button type="button" ng-click="vm.eliminar($index)" class="btn btn-danger btn-sm" ><span class="fa fa-trash-alt"></span> Eliminar</button></div>
+                  <div class="col-md-6 text-left"><button type="button" ng-click="vm.modificar($index)" class="btn btn-warning text-light btn-sm" ><span class="fa fa-edit"></span> Modificar</button></div>
+                </div>
+                <br>
+                <div class="row border-top p-1" id="datosModificar{[{$index}]}" ng-if="vm.formdata[$index].datosModificar == true" >
+                  <div class="col-md-12"><span class="float-right mt-2 fa fa-times" title="Cerrar" ng-click="vm.cerrar($index)"></span><h6 class="label mx-auto mt-2">Datos ha Modficar</h6></div>
+                  <div class="col-md-6 mx-auto" ng-if="vm.modulo == 'pagos'">
+                    <div class="col form-group">
+                        <div class="label text-left">Banco:</div>
+                        <div class="input-group">
+                          <select ng-model="vm.formdata[$index].banco" class="form-control select2">
+                            <option value="bbva">BBVA</option>
+                            <option value="bancolombia">Bancolombia</option>
+                            <option value="banco agrario">Banco Agrario</option>
+                            <option value="banco popular">Banco Popular</option>
+                          </select>
+                        </div>
+                    </div>
+                    <div class="col form-group">
+                        <div class="label text-left">Fecha / Hora Consignación:</div>
+                        <div class="input-group text-left">
+                          <input class="form-control ml-2 w-25" type="date" ng-model="vm.formdata[$index].fecha_consig">
+                          <input class="form-control w-25" type="time" ng-model="vm.formdata[$index].tiempo_consignacion">
+                        </div>
+                    </div>
+                    <div class="col form-group">
+                        <div class="label text-left">Nro. Consignación:</div>
+                        <div class="input-group"><input class="form-control" type="text" ng-model="vm.formdata[$index].nro_consignacion"></div>
+                    </div>
+                    <div class="col form-group">
+                        <div class="label text-left">Nro. Cheque:</div>
+                        <div class="input-group"><input class="form-control" type="text" ng-model="vm.formdata[$index].nro_cheque"></div>
+                    </div>
+                    <div class="col form-group">
+                        <div class="label text-left">Observaciones del pago:</div>
+                        <div class="input-group"><input class="form-control" type="text" ng-model="vm.formdata[$index].observaciones"></div>
+                    </div>
+                    <div class="col form-group">
+                        <div class="label text-left">Método de Pago:</div>
+                        <div class="input-group">
+                          <select id="metodo" class="form-control" ng-model="vm.formdata[$index].id_metodo_pago">
+                            <option value="1">Efectivo</option>
+                            <option value="2">Cheque</option>
+                            <option value="3">Consignación</option>
+                            <option value="4">PSE</option>
+                          </select>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12 form-group">
+                      <div class="label text-left">Observaciones de la Novedad: * (Campo Requerido)</div>
+                      <div class="text-left"><span class="help-block"><li class="fa fa-info-circle text-info"></li> Describa detalladamente el porque se realiza esta novedad.</span></div>
+                      <div class="input-group"><textarea id="observaciones_novedad" class="form-control" type="text" ng-model="vm.formdata[$index].observaciones_novedad" row="150"></textarea></div>
+                    </div>
+
+                    <div class="col-md-12 m-2">
+                      <md-progress-linear md-mode="query" ng-if="vm.formdata[$index].progress == true"></md-progress-linear>
+                    </div>
+
+                    <div class="col-md-12 form-group">
+                        <div><input type="button" class="btn btn-primary btn-sm" ng-click="vm.EjecutarAccion($index,pago.id_pago,'modificar')" value="Registrar Novedad"></div>
+                    </div>
+                  </div><!--Fin Pagos-->
+                  <div class="row" ng-if="vm.modulo == 'cierres de cajas'">
+
+                  </div>
+                </div>
+                <div class="row border-top p-1" id="Eliminar{[{$index}]}" ng-if="vm.formdata[$index].eliminar == true" >
+                  <div class="col-md-12"><span class="float-right mt-2 fa fa-times" title="Cerrar" ng-click="vm.cerrarEliminar($index)"></span><h6 class="label mx-auto mt-2">Eliminar</h6></div>
+                  <div class="col-md-6 mx-auto" ng-if="vm.modulo == 'pagos'">
+                    <hr>
+                    <div class="col-md-12 form-group">
+                      <div class="label text-left">Observaciones de la Novedad: * (Campo Requerido)</div>
+                      <div class="text-left"><span class="help-block"><li class="fa fa-info-circle text-info"></li> Describa detalladamente el porque se realiza esta novedad.</span></div>
+                      <div class="input-group"><textarea id="observaciones_novedad" class="form-control" type="text" ng-model="vm.formdata[$index].observaciones_novedad" row="150"></textarea></div>
+                    </div>
+
+                    <div class="col-md-12 m-2">
+                      <md-progress-linear md-mode="query" ng-if="vm.formdata[$index].progressDelete == true"></md-progress-linear>
+                    </div>
+
+                    <div class="col-md-12 form-group">
+                        <div><input type="button" class="btn btn-primary btn-sm" ng-click="vm.EjecutarAccion($index,pago.id_pago,'eliminar')" value="Registrar Novedad"></div>
+                    </div>
+                  </div><!--Fin Pagos-->
+                  <div class="row" ng-if="vm.modulo == 'cierres de cajas'">
+
+                  </div>
+                </div>
+              </div><!-- md-list-item-text -->
+
+            </md-list-item>
+          </md-list>
+        </md-content>
+      </div><!-- datosPagos -->
+      <div class="row ml-3" style="margin-top:30px;">
+        <ul>
+            <li>
+                <a class="btn btn-info btn-sm" href="{{ path('novedades_index') }}">Volver a la lista</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}

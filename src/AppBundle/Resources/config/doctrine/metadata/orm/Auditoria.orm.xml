@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Auditoria" table="auditoria">
+    <indexes>
+      <index name="id_usuario" columns="id_usuario"/>
+      <index name="id_empresa" columns="id_empresa"/>
+    </indexes>
+    <id name="idAuditoria" type="integer" column="id_auditoria">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="txhash" type="blob" column="TxHash" length="65535" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="from" type="blob" column="BxFrom" length="65535" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="to" type="blob" column="BxTo" length="65535" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="fechaHora" type="datetime" column="fecha_hora" nullable="false"/>
+    <field name="accion" type="string" column="accion" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="tabla" type="string" column="tabla" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="idDatos" type="string" column="id_datos" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="datos" type="blob" column="datos" length="65535" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <many-to-one field="idUsuario" target-entity="Usuarios" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_usuario" referenced-column-name="id_usuario"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idEmpresa" target-entity="Empresas" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_empresa" referenced-column-name="id_empresa"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

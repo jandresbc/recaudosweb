@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="{{path('historialCajas')}}">Historial Cajas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Editar Caja</li>
+    </ol>
+  </nav>
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+          <div class="col-md-12 text-center">
+              <header class='text-center'>
+                  <h2>Editar Caja.</h2>
+                  <span class="help-block"><li class="fa fa-info-circle text-info"></li> Editar caja.</span>
+              </header>
+              <div class="col-md-12">
+                {{ form_start(form) }}
+                  <div class="form-group row">
+                    <div class="inline-block col-md-5 text-right">{{ form_label(form.nombreCaja) }}</div>
+                    <div class="inline-block col-md-7">{{ form_widget(form.nombreCaja,{"attr":{"value":caja}}) }}</div>
+                  </div>
+
+                  <div class="text-center mt-3">
+                    <input type="submit" class='btn btn-primary' value="Editar" />
+                  </div>
+                {{ form_end(form) }}
+              </div>
+          </div>
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}

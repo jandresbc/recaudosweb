@@ -1,0 +1,24 @@
+agencias_index:
+    path:     /
+    defaults: { _controller: "AppBundle:Agencias:index" }
+    methods:  [GET,POST]
+
+agencias_show:
+    path:     /{idAgencia}/show
+    defaults: { _controller: "AppBundle:Agencias:show" }
+    methods:  GET
+
+agencias_new:
+    path:     /new
+    defaults: { _controller: "AppBundle:Agencias:new" }
+    methods:  [GET, POST]
+
+agencias_edit:
+    path:     /{idAgencia}/edit
+    defaults: { _controller: "AppBundle:Agencias:edit" }
+    methods:  [GET, POST]
+
+agencias_delete:
+    path:     /{idAgencia}/delete
+    defaults: { _controller: "AppBundle:Agencias:delete" }
+    methods:  DELETE

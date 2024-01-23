@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item">Maestros</li>
+        <li class="breadcrumb-item"><a href="{{ path('auditoria_index') }}">Auditoria</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Ver Auditoria</li>
+      </ol>
+    </nav>
+
+    <div class="container-fluid" style="height:700px;">
+
+      <header class='text-center'>
+          <h2>Auditoría Nro. {{ auditorium.idAuditoria }}</h2>
+      </header>
+
+      {% if validacion is defined %}
+        {% if validacion == 'valid' %}
+          <span class="fa fa-check-circle" style="color:green; font-size:34px;"> Record {{validacion|capitalize}}</span>
+        {% elseif validacion == 'no valid' %}
+          <span class="fa fa-times-circle" style="color:red; font-size:34px;"> Record {{validacion|capitalize}}</span>
+        {% endif %}
+      {% endif %}
+
+      <div class="row mt-3 table-responsive">
+        <table class="table table-striped table-bordered w-50 mx-auto">
+            <tbody>
+                <tr>
+                    <th width="140">Txhash</th>
+                    <td>{{ auditorium.txhash }}</td>
+                </tr>
+                <tr>
+                    <th>Bxfrom</th>
+                    <td>{{ auditorium.bxfrom }}</td>
+                </tr>
+                <tr>
+                    <th>Bxto</th>
+                    <td>{{ auditorium.bxto }}</td>
+                </tr>
+                <tr>
+                    <th>Fecha / hora</th>
+                    <td>{% if auditorium.fechaHora %}{{ auditorium.fechaHora|date('Y-m-d h:i:s A') }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <th>Acción</th>
+                    <td>{{ auditorium.accion }}</td>
+                </tr>
+                <tr>
+                    <th>Tabla</th>
+                    <td>{{ auditorium.tabla }}</td>
+                </tr>
+                <tr>
+                    <th>ID Datos</th>
+                    <td>{{ auditorium.idDatos }}</td>
+                </tr>
+                <tr>
+                    <th>Datos</th>
+                    <td>{{ auditorium.datos | replace({'~': ' | '}) }}</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+
+      <div class="row ml-3">
+        <ul>
+            <li>
+                <a class="btn btn-info btn-sm" href="{{ path('auditoria_index') }}">Volver a la lista</a>
+            </li>
+            <li>
+                <a class="btn btn-success btn-sm" href="{{ path('validateTxHash',{idAuditoria:auditorium.idAuditoria}) }}">Validar Registro Auditoría</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

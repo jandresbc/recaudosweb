@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-6">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item">Maestros</li>
+        <li class="breadcrumb-item"><a href="{{ path('facturas_index') }}">Facturación</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Subir Facturación .csv</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="col-md-6 text-center pt-2">
+    <span class="label">Código Interno de su Empresa: </span>{{ empresas[0].getIdEmpresa().getIdEmpresa() }}
+  </div>
+</div>
+
+<div class="container-fluid" style="height:500px;">
+    <header class='text-center mx-auto' style="width:800px;">
+        <h2>Subir Facturación .csv</h2>
+        <span class="help-block"><li class="fa fa-info-circle text-info"></li> En este módulo le permitirá subir, masívamente, la facturación del periodo actual, abonos o realizar ajustes. En el caso de los Ajustes a la facturación; aquellas facturas que tengan un pago registrado se harán los cálculos necesarios para obtener el saldo, y si los hay, se actualizará el campo saldo de este pago.</span>
+    </header>
+
+    {% if Error is defined and Error is not null %}
+        <div id='Error' class="alert alert-danger alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {{ Error }}
+        </div>
+    {% else %}
+      {% if mensajes is defined and mensajes is not null %}
+          <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              {{ mensajes }}
+          </div>
+      {% endif %}
+
+      {% if app.request.get('mensajes') is defined and app.request.get('mensajes') is not null %}
+          <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              {{ app.request.get('mensajes') }}
+          </div>
+      {% endif %}
+    {% endif %}
+
+    <div class="m-3 text-left"><a href='{{ asset("bundles/app/templates/PlantillaFacturacion.csv") }}' target="_blank" title="Descargar plantilla para el cargue de facturación">Descargar Plantilla .csv</a></div>
+
+    {{ form_start(form) }}
+      <div class="row mx-auto w-50">
+          <div class="col-md-12 row mx-auto">
+            <div class="col-md-12">{{ form_widget(form.selectFacturacion) }}</div>
+          </div>
+          <div class="col-md-12">
+            <div>{{ form_widget(form.archivo) }}</div>
+            <div>
+              <span class="help-block"><li class="fa fa-info-circle text-info"></li> Tamaño Máx.: 5 Mb. 40.000 registros aprox.</span>
+              <span class="help-block"><li class="fa fa-info-circle text-info"></li> Tiempo Máx. de Ejecución: 20 Min.</span>
+            </div>
+          </div>
+          <div class="row mx-auto mt-3">
+            <div class="col-md-12"><input type="submit" class="btn btn-primary btn-sm" value="Subir y Procesar" /></div>
+          </div>
+          <div></div>
+      </div>
+    {{ form_end(form) }}
+    <div class="row ml-3">
+      <ul>
+          <li>
+              <a class="btn btn-info btn-sm" href="{{ path('facturas_index') }}">Volver a la lista</a>
+          </li>
+      </ul>
+    </div>
+    {% if logs is defined %}
+      <div>logs de cargue: <a href='#'>Descargar log.txt</a></div>
+      {% for log in logs %}
+        <div>{{ log.item }}</div>
+        <div>{{ log.mensaje }}</div>
+      {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+{% endblock %}

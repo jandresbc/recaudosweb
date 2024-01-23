@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Permisos" table="permisos">
+    <indexes>
+      <index name="id_pagina" columns="id_pagina"/>
+      <index name="id_grupo_usuario" columns="id_grupo_usuario"/>
+      <index name="id_empresa" columns="id_empresa"/>
+    </indexes>
+    <id name="idPermiso" type="integer" column="id_permiso">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <many-to-one field="idPagina" target-entity="Paginas" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_pagina" referenced-column-name="id_pagina"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idGrupoUsuario" target-entity="GruposUsuarios" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_grupo_usuario" referenced-column-name="id_grupo_usuario"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idEmpresa" target-entity="Empresas" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_empresa" referenced-column-name="id_empresa"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

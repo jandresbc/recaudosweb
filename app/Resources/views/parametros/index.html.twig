@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Configuración del sistema</li>
+      </ol>
+    </nav>
+
+    <header class='text-center'>
+        <h2>Configuración del sistema.</h2>
+        <span class="help-block"><li class="fa fa-info-circle text-info"></li> Lista los parámetros de configuración registrados con los cuales el sistema está configurado.</span>
+    </header>
+
+    {% if mensajes is defined and mensajes is not null or app.request.get('mensajes') is defined and app.request.get('mensajes') is not null%}
+        <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {% if mensajes is defined %}
+            {{ mensajes }}
+          {% elseif app.request.get('mensajes') is defined %}
+            {{ app.request.get('mensajes') }}
+          {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="container-fluid">
+      <ul class="mb-2">
+          {% if app.session.get('rol') == 'Superusuario' %}
+          <li>
+              <a class="btn btn-info btn-sm" href="{{ path('parametros_new') }}">Crear Parametros</a>
+          </li>
+          {% endif %}
+      </ul>
+      {% if parametros is not empty %}
+        <div class="d-inline-block w-100 text-right">
+            <span class="label label-warning">
+                Total Entradas: <span class="cTomato">{{ parametros.getTotalItemCount }}</span>
+            </span>
+        </div>
+
+        <div class="table-responsive" style="height:650px; font-size:13px;">
+          <table class="table table-striped table-sm mx-auto">
+              <thead>
+                  <tr>
+                      <th>Url Logo Empresa</th>
+                      <th>Encabezado Informes</th>
+                      <th>% Meta de Recaudo</th>
+                      {% if app.session.get('rol') == 'Superusuario' %}
+                      <th>Empresa</th>
+                      {% endif %}
+                      <th>Acciones</th>
+                  </tr>
+              </thead>
+              <tbody>
+              {% for parametro in parametros %}
+                  <tr>
+                      <td>{{ parametro.urlLogoEmpresa }}</td>
+                      <td width="20">{{ parametro.headerInformes }}</td>
+                      <td>{{ parametro.porcentajeMetaRecaudo }}</td>
+                      {% if app.session.get('rol') == 'Superusuario' %}
+                      <td>{{ parametro.idEmpresa }}</td>
+                      {% endif %}
+                      <td>
+                          <ul>
+                              <li>
+                                  <a href="{{ path('parametros_show', { 'idParametros': parametro.idParametros }) }}">
+                                    <span class="fa fa-eye cTomato"></span>
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="{{ path('parametros_edit', { 'idParametros': parametro.idParametros }) }}">
+                                    <span class="fa fa-edit cTomato"></span>
+                                  </a>
+                              </li>
+                          </ul>
+                      </td>
+                  </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+          {# display navigation #}
+          <div class="navigation mx-auto">
+              {{ knp_pagination_render(parametros) }}
+          </div>
+        </div>
+      {% else %}
+        <div class="alert alert-warning w-50 mx-auto">No hay registros que listar.</div>
+      {% endif %}
+    </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}

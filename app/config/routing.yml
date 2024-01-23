@@ -1,0 +1,194 @@
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+
+##API
+post:
+    resource: "@AppBundle/Services"
+    type:     annotation
+
+appbundle:
+    resource: '@AppBundle/Resources/config/routing.yml'
+
+##Rutas para el aplicativo.
+dashboard:
+    path:     /dashboard
+    defaults: { _controller: AppBundle:dashboard:index }
+
+recaudos:
+    path:     /recaudos
+    defaults: { _controller: AppBundle:Recaudos:index }
+
+historialCajas:
+    path:     /historialCajas
+    defaults: { _controller: AppBundle:Recaudos:historialCajas }
+
+subirPagos:
+    path:     /subirPagos/{idCaja}
+    defaults: { _controller: AppBundle:Recaudos:subirPagos }
+
+CierresDeCajas:
+    path: /cierredecaja/{idCaja}
+    defaults: { _controller: AppBundle:CierresDeCajas:index }
+
+CruceDeCuentas:
+    path: /crucesdecuentas
+    defaults: { _controller: AppBundle:CruceDeCuentas:index }
+
+Cajas:
+    path: /crearcaja
+    defaults: { _controller: AppBundle:Cajas:index }
+
+Permisos:
+    path: /permisos
+    defaults: { _controller: AppBundle:Permisos:index }
+
+EditarCaja:
+    path: /editarcaja/{idCaja}
+    defaults: { _controller: AppBundle:Cajas:edit }
+
+ArchivarCajas:
+    path: /archivarCaja/{idCaja}
+    defaults: { _controller: AppBundle:Cajas:ArchivarCaja }
+
+DesArchivarCajas:
+    path: /DesArchivarCaja/{idCaja}
+    defaults: { _controller: AppBundle:Cajas:desArchivar }
+
+InformeCierresDeCajas:
+    path: /informecierredecaja
+    defaults: { _controller: AppBundle:InformeCierresDeCajas:index }
+
+InformeTotalRecaudo:
+    path: /informetotalrecaudado
+    defaults: { _controller: AppBundle:InformeTotalRecaudado:index }
+
+InformeRecaudoMatricula:
+    path: /informerecaudomatricula
+    defaults: { _controller: AppBundle:InformeRecaudoMatricula:index }
+
+InformeCartera:
+    path: /informecartera
+    defaults: { _controller: AppBundle:InformeCartera:index }
+
+InformePagosPeriodosAnteriores:
+    path: /informepagosperiodosanteriores
+    defaults: { _controller: AppBundle:InformePagosPeriodosAnteriores:index }
+
+InformeNovedades:
+    path: /informenovedades
+    defaults: { _controller: AppBundle:InformeNovedades:index }
+
+ExportInformeCierre:
+    path: /exportinformecierre/{idCierreCaja}/{typeExport}
+    defaults: { _controller: AppBundle:InformeCierresDeCajas:ExportInforme }
+
+ExportInformeSupergiros:
+    path: /ExportInformeSupergiros
+    defaults: { _controller: AppBundle:RecaudosSuperGiros:index }
+
+transacciones:
+    path:     /transacciones/{idCaja}
+    defaults: { _controller: AppBundle:Transacciones:index }
+
+setpassword:
+    path: /setpassword
+    defaults: { _controller: AppBundle:SetPassword:index }
+
+consultasTransacciones:
+    path:     /consultasTransacciones
+    defaults: { _controller: AppBundle:consultasTransacciones:index }
+
+consultasPagosUsuarios:
+    path:     /consultasPagosUsuarios/{nit}
+    defaults: { _controller: AppBundle:ConsultasPagosUsuarios:index }
+
+consultaTotalRecaudado:
+    path:     /consultaTotalRecaudado
+    defaults: { _controller: AppBundle:ConsultasTotalRecaudado:index }
+
+##Rutas para los servicios
+conf:
+  path: /configuracion/{idEmpresa}
+  defaults: { _controller: AppBundle:Services:Configapp }
+  methods: [GET]
+
+getFactura:
+  path: /getFactura/{nroFactura}/{idCaja}
+  defaults: { _controller: AppBundle:Services:getFactura }
+  methods: [GET]
+
+getInfoFactura:
+  path: /getInfoFactura
+  defaults: { _controller: AppBundle:Services:getInfoFactura }
+  methods: [GET]
+
+getRecibo:
+  path: /getRecibo/{idTransaccion}
+  defaults: { _controller: AppBundle:Services:getRecibo }
+  methods: [GET]
+
+saveTransaction:
+  path: /guardarTransaccion
+  defaults: { _controller: AppBundle:Services:saveTransaction }
+  methods: [GET,POST]
+
+hasConsignacion:
+  path: /hasConsignacion
+  defaults: { _controller: AppBundle:Services:hasConsignacion }
+  methods: [POST]
+
+hasCodeSecurity:
+  path: /hasCodeSecurity/{idTransaction}
+  defaults: { _controller: AppBundle:Services:hasCodeSecurity }
+  methods: [GET]
+
+getPagos:
+  path: /getPagos
+  defaults: { _controller: AppBundle:Services:getPagos }
+  methods: [GET]
+
+getInfoPagos:
+  path: /getInfoPagos/{nroFactura}
+  defaults: { _controller: AppBundle:Services:getInfoPagos }
+  methods: [GET]
+
+deleteRegister:
+  path: /deleteRegister/{idRegister}/{module}
+  defaults: { _controller: AppBundle:Services:deleteRegister }
+  methods: [POST]
+
+editRegister:
+  path: /editRegister/{idRegister}/{module}
+  defaults: { _controller: AppBundle:Services:editRegister }
+  methods: [POST]
+
+getPeriodos:
+  path: /getPeriodos
+  defaults: { _controller: AppBundle:Services:getPeriodos }
+  methods: [GET]
+
+getPermisos:
+  path: /getPermisos/{idGrupoUsuario}/{idEmpresa}/{accion}
+  defaults: { _controller: AppBundle:Services:Permisos }
+  methods: [GET]
+
+getStatusRecaudo:
+  path: /getStatusRecaudo
+  defaults: { _controller: AppBundle:Services:getStatusRecaudo }
+  methods: [GET]
+
+
+## Rutas para el Inicio de session
+error:
+    path:     /error/{codigo}
+    defaults: { _controller: AppBundle:error:index }
+
+auth:
+    path: /auth
+    defaults: { _controller: AppBundle:Autenticacion:index }
+
+logout:
+    path:     /logout/{usuario}
+    defaults: { _controller: AppBundle:Autenticacion:logout }
+    methods:  [GET]

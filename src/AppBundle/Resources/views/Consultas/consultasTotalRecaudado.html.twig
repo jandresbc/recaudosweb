@@ -1,0 +1,236 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item">Consultas</li>
+      <li class="breadcrumb-item active" aria-current="page">Total Recaudado</li>
+    </ol>
+  </nav>
+  <div class="container-fluid" style="height:1000px;">
+      <div class="row ">
+          <div class="col-md-12 text-center">
+              <header class='text-center'>
+                  <h2>Consulta Total Recaudado.</h2>
+                  <span class="help-block"><li class="fa fa-info-circle text-info"></li> Seleccione los filtros por los cuales desea consultar. Como mínimo debe seleccionar uno de los filtros disponibles para realizar esta consulta.</span>
+              </header>
+              <main class="text-center">
+                {{ form_start(form) }}
+                  <div class="row text-center">
+                    {% if app.session.get('rol') != 'Cajero' %}
+                    <!--<div class="col-md-4 mt-2">
+                      <div class="text-left label">{# form_label(form.Empresas) #}</div>
+                      <div class="text-left">{# form_widget(form.Empresas) #}</div>
+                    </div>-->
+                    <div class="col-md-4 mt-2">
+                      <div class="text-left label">{{ form_label(form.Municipio) }}</div>
+                      <div class="text-left">{{ form_widget(form.Municipio) }}</div>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                      <div class="text-left label">{{ form_label(form.Agencias) }}</div>
+                      <div class="text-left">{{ form_widget(form.Agencias) }}</div>
+                    </div>
+                    {% endif %}
+                    <div class="col-md-4 mt-2">
+                      <div class="text-left label">{{ form_label(form.sedeAgencias) }}</div>
+                      <div class="text-left">{{ form_widget(form.sedeAgencias) }}</div>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                      <div class="text-left label">{{ form_label(form.fechaInicio) }}</div>
+                      <div class="text-left">{{ form_widget(form.fechaInicio) }}</div>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                      <div class="text-left label">{{ form_label(form.fechaFin) }}</div>
+                      <div class="text-left">{{ form_widget(form.fechaFin) }}</div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="text-center">
+                    <input type="submit" class='btn btn-primary' value="Consultar" />
+                  </div>
+                {{ form_end(form) }}
+              </main>
+          </div>
+
+          {% if mensajes is defined and mensajes is not null %}
+              <div id='mensaje' class="text-center alert alert-warning alert-dismissible mx-auto m-2" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ mensajes }}
+              </div>
+          {% endif %}
+
+          {% if data is defined and data|length > 0 %}
+            {% set totalRecaudo = 0 %}
+            {% set totalFacturas = 0 %}
+            {% set keys = "" %}
+            {% set ind = 0 %}
+
+            {% for datos in data %}
+              {% set totalRecaudo = totalRecaudo+datos.totalRecaudado %}
+              {% set totalFacturas = totalFacturas+datos.totalFacturasRecaudadas %}
+              {% if ind < (data|length)-1 %}
+                {% set keys = keys~datos.sedeAgencia~", " %}
+              {% elseif ind == (data|length)-1 %}
+                {% set keys = keys~datos.sedeAgencia %}
+              {% endif %}
+
+              {% set ind = ind+1 %}
+            {% endfor %}
+
+            <div class="container-fluid row mt-3" style="height:1000px;">
+                <div class="col-md-4 text-center">
+                  <div class="card" style="width: 22rem;">
+                    <img class="card-img-top" src="{{ asset('bundles/app/img/recaudos.jpeg') }}" alt="Total Recaudos">
+                    <div class="card-body">
+                      <h5 class="card-title">Compilado de Recaudados</h5>
+                      <p class="card-text">Suma compilada del Total Recaudado y Números de Facturas de las Agencias de: <b>{{ keys }}</b>.</p>
+                      <h5>Total Recaudo: ${{ totalRecaudo|number_format(0,",",".") }}</h5>
+                      <h5>Total # Facturas: {{ totalFacturas }}</h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-8">
+                  <div id="graphCanvas" style="width:550px;" class="d-inline-block">
+                    <button type="button" title="Descargar Gráfica" class="float-right btn btn-sm btn-info fa fa-download" onclick="download('RecaudoChartConsultas')"></button>
+                    <canvas id="RecaudoChartConsultas" width="200" height="110"></canvas>
+                  </div>
+                  <div id="graphCanvas" style="width:550px;" class="d-inline-block">
+                    <button type="button" title="Descargar Gráfica" class="float-right btn btn-sm btn-info fa fa-download" onclick="download('FacturasChartConsultas')"></button>
+                    <canvas id="FacturasChartConsultas" width="200" height="110"></canvas>
+                  </div>
+                </div>
+              </div><!-- Fin row -->
+          {% endif %}
+
+      </div>
+  </div>
+  {% if dataJson is defined %}
+    <input type="hidden" id="dataJson" value="{{ dataJson }}">
+  {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  var dataJson = $("#dataJson").val();
+
+  download = function(id){
+    app.downloadChartCanvas(id);
+  }
+
+  if(typeof dataJson != 'undefined'){
+    dataJson = JSON.parse(dataJson);
+
+    var labelsTotalRecaudado = [""];
+    var labelsNroFacturas = [];
+    var totalRecaudo = [0];
+    var nroFacturas = [];
+
+    $.each(dataJson,function(k, data){
+      labelsTotalRecaudado.push(data.sedeAgencia);
+      labelsNroFacturas.push(data.sedeAgencia+" | #"+data.totalFacturasRecaudadas);
+      totalRecaudo.push(data.totalRecaudado);
+      nroFacturas.push(data.totalFacturasRecaudadas);
+    });
+
+    var formatNumber = function(number, decimalsLength, decimalSeparator, thousandSeparator) {
+       var n = number,
+        decimalsLength = isNaN(decimalsLength = Math.abs(decimalsLength)) ? 2 : decimalsLength,
+        decimalSeparator = decimalSeparator == undefined ? "," : decimalSeparator,
+        thousandSeparator = thousandSeparator == undefined ? "." : thousandSeparator,
+        sign = n < 0 ? "-" : "",
+        i = parseInt(n = Math.abs(+n || 0).toFixed(decimalsLength)) + "",
+        j = (j = i.length) > 3 ? j % 3 : 0;
+
+       return sign +
+        (j ? i.substr(0, j) + thousandSeparator : "") +
+        i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousandSeparator) +
+        (decimalsLength ? decimalSeparator + Math.abs(n - i).toFixed(decimalsLength).slice(2) : "");
+    }
+
+    var ctxLine = document.getElementById("RecaudoChartConsultas").getContext('2d');
+    var myChartLine = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+            labels: labelsTotalRecaudado,
+            datasets: [{
+                label: "Total Facturado",
+                data: totalRecaudo,
+                backgroundColor: [
+                    'rgba(26, 188, 156,0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 159, 64, 0.6)',
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(26, 188, 156,1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            legend: {
+                display: true,
+                labels: {
+                    fontColor: 'rgb(26, 188, 156)'
+                }
+            },
+            tooltips: {
+                callbacks: {
+                  label: function(tooltipItem, data) {
+                      var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+                      return datasetLabel + ' : $' + formatNumber(tooltipItem.yLabel, 2, ',', '.');
+                    }
+                }
+            }
+        }
+    });
+
+    var ctxPie = document.getElementById("FacturasChartConsultas").getContext('2d');
+    var myChartPie = new Chart(ctxPie, {
+        type: 'doughnut',
+        data: {
+            labels: labelsNroFacturas,
+            datasets: [{
+            	label: "Nro. Facturas Recaudadas",
+            	data: nroFacturas,
+            	backgroundColor: [
+            	    'rgba(255, 99, 132, 0.8)',
+            	    'rgba(54, 162, 235, 0.8)',
+            	    'rgba(255, 206, 86, 0.8)',
+            	    'rgba(75, 192, 192, 0.8)',
+            	    'rgba(153, 102, 255, 0.8)',
+            	    'rgba(255, 159, 64, 0.8)'
+            	],
+            	borderColor: [
+            	    'rgba(255,99,132,1)',
+            	    'rgba(54, 162, 235, 1)',
+            	    'rgba(255, 206, 86, 1)',
+            	    'rgba(75, 192, 192, 1)',
+            	    'rgba(153, 102, 255, 1)',
+            	    'rgba(255, 159, 64, 1)'
+            	],
+            	borderWidth: 1
+            }]
+        },
+        options: {
+            legend: {
+                display: true,
+                labels: {
+                    fontColor: 'rgba(255, 99, 132)'
+                }
+            }
+        }
+    });
+
+  }
+{% endblock %}

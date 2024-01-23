@@ -1,0 +1,112 @@
+{% extends 'baseInformes.html.twig' %}
+
+{% block body %}
+  {% set porcentajeMeta = app.session.get("configuracionapps")[0].getPorcentajeMetaRecaudo() %}
+  {% set valorMeta = (totalFacturado*(porcentajeMeta/100)) %}
+  <header>
+    <h3 class="cTomato m-6">Informe de Cartera.</h3>
+
+    {% if app.session.get("rol") != 'Administrador Agencias' and app.session.get("rol") != 'Cajero' and app.session.get("rol") != 'Superusuario' %}
+      {{ config[0].getHeaderInformes|replace({"%title%":"Informe de Cartera."|upper})|raw }}
+    {% endif %}
+
+    <div class="col-md-12 text-left">Informe Generado el {{ "now"|date("d/m/Y h:i:s A") }}</div>
+  </header>
+  <div class="row ml-1">
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered">
+        <thead class="bg-info text-white">
+          <tr>
+            <th colspan="4" class="text-center">Resumen Facturación y Cartera</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th class="text-left bg-info text-white">Periodo de Facturación</th>
+            <td class="text-left" colspan="3">{{ app.request.get("mes") ~"/"~app.request.get("anio") }}</td>
+          </tr>
+          <tr>
+            <th class="text-left bg-info text-white">Total Facturado</th>
+            <td class="text-left" colspan="3">$ {{ totalFacturado | number_format(2,",",".") }}</td>
+          </tr>
+          <tr>
+            <th class="text-left bg-info text-white" style="width:160px;">Total Recaudado</th>
+            <td class="text-left">$ {{ totalRecaudoGeneralCartera | number_format(2,",",".") }}</td>
+            <th class="text-left bg-info text-white" style="width:200px;">Porcentaje de Recaudo</th>
+            <td class="text-left">{{ ((totalRecaudoGeneralCartera / totalFacturado)*100)|round(2) }}%</td>
+          </tr>
+          <tr>
+            <th class="text-left bg-info text-white">Total Cartera</th>
+            <td class="text-left">$ {{ totalCartera | number_format(2,",",".") }}</td>
+            <th class="text-left bg-info text-white">Porcentaje de Cartera</th>
+            <td class="text-left">{{ ((totalCartera / totalFacturado)*100)|round(2) }}%</td>
+          </tr>
+          <tr>
+            <th class="text-left bg-info text-white">Valor Meta de Recaudo</th>
+            <td class="text-left">$ {{ (totalFacturado*(porcentajeMeta/100)) | number_format(2,",",".") }}</td>
+            <th class="text-left bg-info text-white">Porcentaje Meta Recaudo</th>
+            <td class="text-left">{{ app.session.get("configuracionapps")[0].getPorcentajeMetaRecaudo | round(2) }}%</td>
+          </tr>
+          <tr>
+            <th class="text-left bg-info text-white">Cumplimiento de la Meta</th>
+            <td class="text-left">$ {{ (totalRecaudoGeneralCartera - valorMeta) | number_format(2,",",".") }}</td>
+            <th class="text-left bg-info text-white">Porcentaje Cumplimiento de la Meta</th>
+            <td class="text-left">{{ ((totalRecaudoGeneralCartera / valorMeta)*100) | round(2) }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  {% if app.request.get('appbundle_informecartera')['tipoInforme'] == '2' %}
+
+      <div class="row">
+        <div class="col-md-12">
+        {% if cartera is defined %}
+          <div class="table-responsive">
+            <h4 class="text-left">Cartera.</h4>
+            <table class="table table-sm table-striped table-bordered">
+              <tr class="bg-info text-white">
+                <th>Nro. Factura</th>
+                <th>NIU</th>
+                <th>Valor Factura / Saldo pendiente</th>
+                <th>Periodo de Facturación</th>
+                <th>Meses Atrasados</th>
+                {% if cartera[0]['Municipio'] is defined %}
+                <th>Municipio</th>
+                {% endif %}
+              </tr>
+              <tbody>
+              {% set totalCartera = 0 %}
+
+              {% for deudor in cartera %}
+                {% if deudor["nroFactura"] != 0 %}
+                  <tr>
+                    <td>{{ deudor["nroFactura"] }}</td>
+                    <td>{{ deudor["niu"] }}</td>
+                    <td>$ {{ deudor["valorFactura"] | number_format(0,",",".") }}</td>
+                    <td>{{ deudor["mesAnioFacturado"] | replace({"~":" - "}) }}</td>
+                    <td>{{ deudor["mesesAtrasados"] }}</td>
+                    {% if deudor['Municipio'] is defined %}
+                    <td>{{ deudor["Municipio"] }}</td>
+                    {% endif %}
+                  </tr>
+                  {% set totalCartera = totalCartera + deudor["valorFactura"] %}
+                {% endif %}
+              {% endfor %}
+                <tr>
+                  <th colspan="2">Total Cartera</th>
+                  <th>$ {{ totalCartera | number_format(0,",",".") }}</th>
+                  <td colspan="3"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        {% endif %}
+        </div>
+      </div>
+  {% endif %}
+
+
+{% endblock %}

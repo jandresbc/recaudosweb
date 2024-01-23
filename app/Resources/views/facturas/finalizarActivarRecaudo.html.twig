@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item">Maestros</li>
+      <li class="breadcrumb-item"><a href="{{ path('facturas_index') }}">Facturación</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Finalizar o Activar Recaudo</li>
+    </ol>
+  </nav>
+
+  <header class='text-center'>
+      <h2>Finalizar o Activar Recaudo.</h2>
+      <span class="help-block w-50"><li class="fa fa-info-circle text-info"></li> Permite Finalizar o Activar el proceso de recaudo de un periodo determinado. Recuerde que en caso de que quiera activar nuevamente un periodo y la fecha de vencimiento ya pasó, debe seleccionar una nueva fecha de vencimiento para que en el módulo de recaudo permita encontrar las facturas sin que retorne la advertencia de "factura vencida". Adicional en este módulo le permite modifcar fechas de vencimiento de sus facturas, si en determinado momento desea ampliar el tiempo de recaudo del periodo seleccionado, lo puede hacer activando la opción "Modificar Fechas de Vencimiento". Todos estos cambios solo serán aplicados a las facturas que no tengan un pago registrado.</span>
+  </header>
+
+  <div class="container-fluid">
+        {{ form_start(form) }}
+        <div class="row text-center w-75 mx-auto">
+
+            <div class="col-md-4">
+              <div class="label text-left">{{ form_label(form.mesFacturado) }}</div>
+              <div class="">{{ form_widget(form.mesFacturado) }}</div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="label text-left">{{ form_label(form.anioFacturado) }}</div>
+              <div class="">{{ form_widget(form.anioFacturado) }}</div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="label text-left">{{ form_label(form.fechaVencimiento) }}</div>
+              <div class="">{{ form_widget(form.fechaVencimiento) }}</div>
+            </div>
+
+            <div class="col-md-12 mt-4">
+              <div class="">{{ form_widget(form.tipoProceso) }}</div>
+            </div>
+
+            <div class="row mx-auto mt-4">
+              <div class="col-md-12">
+                <input type="submit" id="Ejecutar" class="btn btn-sm btn-primary" value="Ejecutar Proceso" >
+              </div>
+            </div>
+
+        </div>
+        {{ form_end(form) }}
+
+        {% if mensajes is defined and mensajes is not null or app.request.get('mensajes') is defined and app.request.get('mensajes') is not null%}
+            <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              {% if mensajes is defined %}
+                {{ mensajes }}
+              {% elseif app.request.get('mensajes') is defined %}
+                {{ app.request.get('mensajes') }}
+              {% endif %}
+            </div>
+        {% endif %}
+  </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+  $(document).ready(function(){
+    $("#finalizarRecaudo").click(function(e){
+      e.preventDefault();
+
+      confirm(function(){
+        location.href = $("#finalizarRecaudo").attr("href");
+      },function(){
+        //errorAlert("Denegado");
+      });
+      /*$.jAlert({
+        type:"confirm",
+        'title': '¿Esta Seguro?',
+        'content': '¿Esta seguro que desea finalizar el proceso de recaudo?',
+        'theme': 'red',
+        'size': 'xsm',
+        "onComplete" : function(){
+          alert("hola");
+        }
+      },function(r){
+        location.href = $("#finalizarRecaudo").attr("href");
+      });*/
+      return false;
+    });
+  });
+{% endblock %}

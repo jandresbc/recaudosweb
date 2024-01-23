@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="{{path('recaudos')}}">Recaudos</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Crear Caja</li>
+    </ol>
+  </nav>
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+          <div class="col-md-12 text-center">
+              <header class='text-center'>
+                  <h2>Registrar Caja.</h2>
+                  <span class="help-block"><li class="fa fa-info-circle text-info"></li> Registrar una nueva caja.</span>
+              </header>
+              <div class="col-md-12">
+                {{ form_start(form) }}
+                  <div class="form-group row">
+                    <div class="inline-block col-md-5 text-right">{{ form_label(form.nombreCaja) }}</div>
+                    <div class="inline-block col-md-7">{{ form_widget(form.nombreCaja) }}</div>
+                  </div>
+                  {# if app.session.get('rol') != 'Cajero' and app.session.get('rol') != 'Inactivo' #}
+                    <div class="form-group row">
+                      <div class="inline-block col-md-5 text-right">{{ form_label(form.idUsuario) }}</div>
+                      <div class="inline-block col-md-7">{{ form_widget(form.idUsuario) }}</div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="inline-block col-md-5 text-right">{{ form_label(form.idEmpresaSedeAgencia) }}</div>
+                      <div class="inline-block col-md-7">{{ form_widget(form.idEmpresaSedeAgencia) }}</div>
+                    </div>
+                  {# endif #}
+                  <br>
+                  <div class="text-center">
+                    <input type="submit" class='btn btn-primary' value="Registrar Caja" />
+                  </div>
+                {{ form_end(form) }}
+              </div>
+          </div>
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  $(document).ready(function(){
+    $('#appbundle_cierresdecajas_vlrEnCaja').change(function(){
+      var diff = 0;
+      diff = $(this).val() - $("#appbundle_cierresdecajas_totalRecaudoCaja").val();
+      $('#appbundle_cierresdecajas_diferenciaCierre').val(diff);
+    });
+  });
+{% endblock %}

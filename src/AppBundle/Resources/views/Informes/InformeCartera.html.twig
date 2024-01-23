@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item">Informes</li>
+      <li class="breadcrumb-item active" aria-current="page">Cartera</li>
+    </ol>
+  </nav>
+  <div class="container-fluid">
+      <div class="row" style="height:700px;">
+          <div class="col-md-12 text-center">
+              <header class='text-center'>
+                  <h2>Informe de Cartera.</h2>
+                  <span class="help-block"><li class="fa fa-info-circle text-info"></li> Seleccione los filtros por los cuales desea generar el informe.</span>
+              </header>
+              <main class="text-center">
+                {{ form_start(form) }}
+                  <div class="row col-md-6 mx-auto">
+                    <div class="col-md-6">
+                      <div class="text-left label">{{ form_label(form.mesFacturacion) }}</div>
+                      <div class="text-left">{{ form_widget(form.mesFacturacion) }}</div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="text-left label">{{ form_label(form.anioFacturacion) }}</div>
+                      <div class="text-left">{{ form_widget(form.anioFacturacion) }}</div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="text-center">{{ form_widget(form.tipoInforme) }}</div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="exportType" name="exportType" value="">
+                  <div class="text-center">
+                    <button type="submit" id="btnPDF" class='btn btn-sm btn-danger'>
+                      <li class="fa fa-file-pdf"> Generar Informe .PDF</li>
+                    </button>
+                    <button type="submit" id="btnXLS" class='btn btn-sm btn-success' >
+                      <li class="fa fa-file-excel"> Generar Informe .XLS</li>
+                    </button>
+                    <button type="submit" id="btnChart" class='btn btn-sm btn-warning' >
+                      <li class="fa fa-chart-pie"> Generar Gráfica % Recaudos vs % Cartera</li>
+                    </button>
+                  </div>
+                {{ form_end(form) }}
+                {% if mensajes is defined and mensajes is not null %}
+                    <div id='mensaje' class="text-center alert alert-warning alert-dismissible mx-auto mt-3 w-50" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      {{ mensajes }}
+                    </div>
+                {% endif %}
+              </main>
+
+
+              {% if porcentajeRecaudos is defined and porcentajeCartera is defined %}
+                {% set porcentajeMeta = app.session.get("configuracionapps")[0].getPorcentajeMetaRecaudo() %}
+                {% set valorMeta = (totalFacturado*(porcentajeMeta/100)) %}
+                <div class="row m-3 w-100">
+                    <div class="col-md-6 col-xs-12" style="margin-left:0px; font-size:11px;">
+                      <div class="table-responsive mx-auto">
+                        <table class="table table-sm table-bordered">
+                          <thead class="bg-info text-white">
+                            <tr>
+                              <th colspan="4" class="text-center">Resumen Facturación y Cartera</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <th class="text-left bg-info text-white">Periodo de Facturación</th>
+                              <td class="text-left" colspan="3">{{ app.request.get("mes") ~"/"~app.request.get("anio") }}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left bg-info text-white">Total Facturado <li class="fa fa-info-circle" title="Este es el valor total facturado que se se subió al sistema con sus ajustes, sin tener en cuenta abonos, tanto parciales como avances."></li></th>
+                              <td class="text-left" colspan="3">$ {{ totalFacturado | number_format(2,",",".") }}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left bg-info text-white" style="width:160px;">Total Recaudado <li class="fa fa-info-circle" title="Total de recaudo registrado hasta la fecha. En este cálculo se descuenta aquellas facturas con avances que se hayan hecho, los cuales son saldos a favor del cliente."></li></th>
+                              <td class="text-left">$ {{ totalRecaudoGeneralCartera | number_format(2,",",".") }}</td>
+                              <th class="text-left bg-info text-white" style="width:200px;">Porcentaje de Recaudo <li class="fa fa-info-circle" title="Total de recaudo registrado hasta la fecha. En este cálculo se descuenta aquellas facturas con avances que se hayan hecho, los cuales son saldos a favor del cliente."></li></th>
+                              <td class="text-left">{{ porcentajeRecaudos }}%</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left bg-info text-white">Total Cartera <li class="fa fa-info-circle" title="Cálculo aproximado de facturas de las cuales aún no se han registrado pagos. En estas se incluye las facturas que recibieron pagos parciales y se calcula según su saldo."></li></th>
+                              <td class="text-left">$ {{ totalCartera | number_format(2,",",".") }}</td>
+                              <th class="text-left bg-info text-white">Porcentaje de Cartera <li class="fa fa-info-circle" title="Cálculo aproximado de facturas de las cuales aún no se han registrado pagos. En estas se incluye las facturas que recibieron pagos parciales y se calcula según su saldo."></li></th>
+                              <td class="text-left">{{ porcentajeCartera }}%</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left bg-info text-white">Valor Meta de Recaudo</th>
+                              <td class="text-left">$ {{ (totalFacturado*(porcentajeMeta/100)) | number_format(2,",",".") }}</td>
+                              <th class="text-left bg-info text-white">Porcentaje Meta Recaudo</th>
+                              <td class="text-left">{{ app.session.get("configuracionapps")[0].getPorcentajeMetaRecaudo | round(2) }}%</td>
+                            </tr>
+                            <tr>
+                              <th class="text-left bg-info text-white">Cumplimiento de la Meta</th>
+                              <td class="text-left">$ {{ (totalRecaudoGeneralCartera - valorMeta) | number_format(2,",",".") }}</td>
+                              <th class="text-left bg-info text-white">Porcentaje Cumplimiento de la Meta</th>
+                              <td class="text-left">{{ ((totalRecaudoGeneralCartera / valorMeta)*100) | round(2) }}%</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-xs-12 text-center">
+                      <div class="w-50 mx-auto">
+                        <button type="button" title="Descargar Gráfica" class="btn btn-sm btn-info fa fa-download" onclick="download()"></button>
+                        <canvas id="pieCartera" height="40" width="40" ></canvas>
+                      </div>
+                    </div>
+                </div>
+              {% endif %}
+
+          </div>
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  $(document).ready(function(){
+    $("#btnPDF").click(function(e){
+      $("#exportType").val("pdf");
+    });
+
+    $("#btnXLS").click(function(e){
+      $("#exportType").val("xls");
+    });
+
+    $("#btnChart").click(function(e){
+      $("#exportType").val("grafica");
+    });
+
+    {% if porcentajeRecaudos is defined and porcentajeCartera is defined %}
+      var ctx = $("#pieCartera");
+      var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ["{{ porcentajeRecaudos | e('js') }}% Recaudos", "{{ porcentajeCartera | e('js') }}% Cartera"],
+            datasets: [{
+                label: 'Porcentajes',
+                data: [{{ porcentajeRecaudos | e('js') }}, {{ porcentajeCartera | e('js') }}],
+                backgroundColor: [
+                    'rgba(163, 203, 56,0.8)',
+                    'rgba(234, 32, 39,0.8)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            title : {
+                display: true,
+                text: 'Porcentajes de Recaudos y Cartera'
+            },
+            animation : {
+              onComplete : function(){
+
+              }
+            },
+            tooltips : {
+              enabled: true,
+              mode : 'point'
+            }
+        }
+      });
+
+      download = function(){
+        app.downloadChartCanvas('pieCartera');
+      }
+    {% endif %}
+
+  });
+{% endblock %}

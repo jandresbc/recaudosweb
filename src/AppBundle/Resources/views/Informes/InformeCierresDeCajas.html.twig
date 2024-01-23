@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item">Informes</li>
+      <li class="breadcrumb-item active" aria-current="page">Cierres de Cajas</li>
+    </ol>
+  </nav>
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+          <div class="col-md-12 text-center">
+              <header class='text-center'>
+                  <h2>Informe de Cierres de Cajas.</h2>
+                  <span class="help-block"><li class="fa fa-info-circle text-info"></li> Seleccione el rango de fecha del cierre de caja del cual desea que se genere el reporte.</span>
+              </header>
+              <main class="text-center">
+                {{ form_start(form) }}
+                  <div class="row text-center">
+                    <div class="col"></div>
+                    <div class="col-md-3">
+                      <div class="text-left label">{{ form_label(form.inicioFechaCierreCaja) }}</div>
+                      <div class="text-left">{{ form_widget(form.inicioFechaCierreCaja) }}</div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="text-left label">{{ form_label(form.finFechaCierreCaja) }}</div>
+                      <div class="text-left">{{ form_widget(form.finFechaCierreCaja) }}</div>
+                    </div>
+                    <div class="col"></div>
+                  </div>
+                  <br>
+                  <div class="text-center">
+                    <input type="submit" class='btn btn-primary' value="Generar Informe" />
+                  </div>
+                {{ form_end(form) }}
+              </main>
+          </div>
+          {% if mensajes is defined and mensajes is not null %}
+              <div id='mensaje' class="alert alert-warning alert-dismissible mx-auto mt-3" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ mensajes }}
+              </div>
+          {% endif %}
+
+          {% if cierres is defined %}
+            <div class="row text-left" style="height: 400px;">
+              {% for cierre in cierres %}
+                  <div class="inline-block">
+                      <div class="card bg-light" style="width: 18rem;">
+                        <div class="row m-1 cTomato">
+                          <div class="col-md-6 text-left">{{ cierre.getFechaHoraCierre()|date('d/m/Y')}}</div>
+                          <div class="col-md-6 text-right">{{ cierre.getNroDocumento() }}</div>
+                        </div>
+                        <div class="card-body">
+                          <h5 class="card-title"><label class=" cTomato">Total Recaudo:</label> ${{ cierre.getTotalRecaudoCaja()|number_format(0,",",".") }}</h5>
+                          <div style="font-size:13px;">
+                            <div class="text-left"><label class="cTomato label">Sede Agencia:</label> {{ cierre.getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia.getNombreSede() }}</div>
+                            <div class="text-left"><label class="cTomato label">Empresa:</label> {{ cierre.getIdCaja().getIdEmpresaSedeAgencia().getIdEmpresa.getRazonSocial() }}</div>
+                            <div class="row">
+                              <div class="col-md-6 text-left">
+                                <div class="cTomato label">Diferencia:</div>
+                                <div>${{ cierre.getDiferenciaCierre()|number_format(0,",",".") }}</div>
+                              </div>
+                              <div class="col-md-6 text-left">
+                                <div class="cTomato label">Colillas:</div>
+                                <div>
+                                  {% if cierre.getTotalColillas() is not null %}
+                                    {{ cierre.getTotalColillas() }}
+                                  {% else %}
+                                    0
+                                  {% endif %}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="text-right"><label class="cTomato label">Caja:</label> {{ cierre.getIdCaja().getNombreCaja() }}</div>
+                          <div class="text-right">
+                            <a href="{{ path('ExportInformeCierre',{'idCierreCaja':cierre.getIdCierreCaja(),'typeExport':'pdf'}) }}" class="btn btn-danger btn-sm mb-2"><li class="fa fa-file-pdf"> Exportar Recaudos .PDF</li></a>
+                          </div>
+                          <div class="text-right">
+                            <a href="{{ path('ExportInformeCierre',{'idCierreCaja':cierre.getIdCierreCaja(),'typeExport':'excel'}) }}" class="btn btn-success btn-sm"><li class="fa fa-file-excel"> Exportar Recaudos .XLS</li></a>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    $(document).ready(function(){
+      $("#appbundle_informecierresdecajas_inicioFechaCierreCaja").val(moment().format("YYYY-MM-DD"));
+      $("#appbundle_informecierresdecajas_finFechaCierreCaja").val(moment().format("YYYY-MM-DD"));
+    });
+{% endblock %}

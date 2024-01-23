@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item">Informes</li>
+      <li class="breadcrumb-item active" aria-current="page">Total Recaudado</li>
+    </ol>
+  </nav>
+  <div class="container-fluid">
+      <div class="row ">
+          <div class="col-md-12 text-center">
+              <header class='text-center'>
+                  <h2>Informe del Total Recaudado.</h2>
+                  <span class="help-block"><li class="fa fa-info-circle text-info"></li> Seleccione los filtros por los cuales desea generar el informe. Debe seleccionar por lo menos un filtro para poder generar el informe del total recaudado.</span>
+              </header>
+              <main class="text-center">
+                {{ form_start(form) }}
+                  <div class="row text-center">
+                    <div class="col-md-4">
+                      <div class="text-left label">{{ form_label(form.Municipio) }}</div>
+                      <div class="text-left">{{ form_widget(form.Municipio) }}</div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="text-left label">{{ form_label(form.Agencias) }}</div>
+                      <div class="text-left">{{ form_widget(form.Agencias) }}</div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="text-left label">{{ form_label(form.sedesAgencias) }}</div>
+                      <div class="text-left">{{ form_widget(form.sedesAgencias) }}</div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="text-left label">{{ form_label(form.fechaInicio) }}</div>
+                      <div class="text-left">{{ form_widget(form.fechaInicio) }}</div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="text-left label">{{ form_label(form.fechaFin) }}</div>
+                      <div class="text-left">{{ form_widget(form.fechaFin) }}</div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="exportType" name="exportType" value="">
+                  <div class="text-center mt-4">
+                    <button type="submit" id="btnPDF" class='btn btn-sm btn-danger'>
+                      <li class="fa fa-file-pdf"> Generar Informe .PDF</li>
+                    </button>
+                    <button type="submit" id="btnXLS" class='btn btn-sm btn-success' >
+                      <li class="fa fa-file-excel"> Generar Informe .XLS</li>
+                    </button>
+                    <button type="submit" id="btnCSV" class='btn btn-sm btn-success' >
+                      <li class="fa fa-file-excel"> Generar Informe .CSV</li>
+                    </button>
+                  </div>
+                {{ form_end(form) }}
+              </main>
+          </div>
+          {% if mensajes is defined and mensajes is not null %}
+              <div id='mensaje' class="text-center alert alert-warning alert-dismissible mx-auto mt-3" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ mensajes }}
+              </div>
+          {% endif %}
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  $(document).ready(function(){
+    $("#btnPDF").click(function(e){
+      $("#exportType").val("pdf");
+    });
+
+    $("#btnXLS").click(function(e){
+      $("#exportType").val("xls");
+    });
+
+    $("#btnCSV").click(function(e){
+      $("#exportType").val("csv");
+    });
+  });
+{% endblock %}

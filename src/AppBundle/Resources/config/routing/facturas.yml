@@ -1,0 +1,34 @@
+facturas_index:
+    path:     /
+    defaults: { _controller: "AppBundle:Facturas:index" }
+    methods:  [POST,GET]
+
+facturas_show:
+    path:     /{idFactura}/show
+    defaults: { _controller: "AppBundle:Facturas:show" }
+    methods:  GET
+
+facturas_new:
+    path:     /new
+    defaults: { _controller: "AppBundle:Facturas:new" }
+    methods:  [GET, POST]
+
+finalizarRecaudo:
+    path:     /finalizarRecaudo
+    defaults: { _controller: "AppBundle:Facturas:finalizarRecaudo" }
+    methods:  [GET, POST]
+
+facturas_edit:
+    path:     /{idFactura}/edit
+    defaults: { _controller: "AppBundle:Facturas:edit" }
+    methods:  [GET, POST]
+
+facturas_delete:
+    path:     /{idFactura}/delete
+    defaults: { _controller: "AppBundle:Facturas:delete" }
+    methods:  DELETE
+
+subirFacturacion:
+    path:     /subirFacturacion
+    defaults: { _controller: "AppBundle:Facturas:subirFacturacion" }
+    methods:  [POST,GET]

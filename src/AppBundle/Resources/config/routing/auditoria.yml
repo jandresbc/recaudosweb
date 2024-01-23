@@ -1,0 +1,19 @@
+auditoria_index:
+    path:     /
+    defaults: { _controller: "AppBundle:Auditoria:index" }
+    methods:  [GET,POST]
+
+auditoria_show:
+    path:     /{idAuditoria}/show
+    defaults: { _controller: "AppBundle:Auditoria:show" }
+    methods:  GET
+
+validateTxHash:
+    path:     /{idAuditoria}/validateTxHash
+    defaults: { _controller: "AppBundle:Auditoria:validTxHash" }
+    methods:  GET
+
+validateChain:
+    path:     /validateChain
+    defaults: { _controller: "AppBundle:Auditoria:validateChain" }
+    methods:  POST

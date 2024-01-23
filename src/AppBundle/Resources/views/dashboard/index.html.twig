@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{% if app.session.get("rol") == 'Administrador' or app.session.get("rol") == 'Auditor' or app.session.get("rol") == 'Superusuario'%}
+<div id='DatosReales' class="container-fluid" ng-app='recaudos' ng-controller='DashboardController as vm' ng-Init="vm.getPagos()">
+  <div class="row bg-light border-bottom" style="margin-bottom:10px; margin-left:-35px;">
+  {% if app.session.get('rol') == 'Administrador' or app.session.get('rol') == 'Auditor' or app.session.get('rol') == 'Superusuario'%}
+    <div class="col-md-4">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-light pb-0">
+          <li class="breadcrumb-item" ><a href="{{path('dashboard')}}">Dashboard</a></li>
+          <li class="breadcrumb-item active text-dark" aria-current="page">Datos en tiempo real.</li>
+        </ol>
+      </nav>
+      <div class="row">
+        <div class="col-md-6 text-left pb-1" style="padding-left:32px;">
+          <a href ng-click="vm.showFilters()"><li class="fa fa-filter cTomato"><span style="font-weight: normal;"> Filtros</span></li></a>
+        </div>
+        <div class="col-md-6 text-right pb-2">
+          <a href="{{ path("businessIntelligence") }}" title="Análisis de datos">
+            <li class="fa fa-chart-line cTomato">
+              <span class="cTomato" style="font-size:16px; font-weight: normal;"> BI</span>
+            </li>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8 row">
+      <div class="col-md-4 border-left" style="padding-top:11px;">
+        Recaudo General <li class="fa fa-info-circle text-info" title="Total de recaudo registrado hasta la fecha."></li><br>
+        <span class="label" style="font-size:30px;">{[{ vm.recaudoTotalGeneral|currency:"$":0 }]}</span>
+      </div>
+      <div class="col-md-2 border-left" style="padding-top:11px;">
+        % Recaudo <li class="fa fa-info-circle text-info" title="Porcentaje de pagos registrados en el sistema, dentro del periodo actual."></li><br>
+        <span class="label" style="font-size:30px;">{[{ vm.porcentajeRecaudo | number : 2 }]}%</span>
+      </div>
+      <div class="col-md-2 border-left" style="padding-top:11px;">
+        % Cartera <li class="fa fa-info-circle text-info" title="Cálculo aproximado de facturas de las cuales aún no se han registrado pagos."></li><br>
+        <span class="label" style="font-size:30px;">{[{ vm.porcentajeCartera | number : 2 }]}%</span>
+      </div>
+      <div class="col-md-2 border-left" style="padding-top:11px;">
+        # Cajeros <li class="fa fa-info-circle text-info" title="Número de cajeros activos en el sistema."></li><br>
+        <span class="label" style="font-size:30px;">{[{ vm.sessionesActivasCajeros }]}</span>
+      </div>
+      <div class="col-md-2 border-left" style="padding-top:22px;">
+        <li id="view-fullscreen" class="fa fa-expand-arrows-alt cTomato" style="font-size:35px; cursor:pointer;" title="Expandir"></li>
+        <li id="cancel-fullscreen" class="fa fa-compress cTomato invisible" style="font-size:35px; cursor:pointer;" title="Contraer"></li>
+      </div>
+    </div>
+  {% else %}
+    <div class="col-md-8">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-light pb-0">
+          <li class="breadcrumb-item" ><a href="{{path('dashboard')}}">Dashboard</a></li>
+          <li class="breadcrumb-item active text-dark" aria-current="page">Datos en tiempo real.</li>
+        </ol>
+      </nav>
+
+      <div class="row">
+        <div class="col-md-6 text-left pb-1" style="padding-left:32px;">
+          <a href ng-click="vm.showFilters()"><li class="fa fa-filter cTomato"><span style="font-weight: normal;"> Filtros</span></li></a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 row">
+      <div class="col-md-8 border-left" style="padding-top:11px;">
+        Recaudo General <li class="fa fa-info-circle text-info" title="Total de recaudo registrado hasta la fecha."></li><br>
+        <span class="label" style="font-size:30px;">{[{ vm.recaudoTotalGeneral|currency:"$":0 }]}</span>
+      </div>
+      <div class="col-md-4 border-left" style="padding-top:22px;">
+        <li id="view-fullscreen" class="fa fa-expand-arrows-alt cTomato" style="font-size:35px; cursor:pointer;" title="Expandir"></li>
+        <li id="cancel-fullscreen" class="fa fa-compress cTomato invisible" style="font-size:35px; cursor:pointer;" title="Contraer"></li>
+      </div>
+    </div>
+   {% endif %}
+  </div>
+
+  <div class="row" ng-hide="vm.filtros">
+    <div class="col-md-2 col-xs-12 text-left">
+      <label>Mes Facturado:</label>
+      <select class="select2" id="selectMesFacturado" style="width:150px;" ng-model="vm.mesFact">
+        <option value="{[{ periodo.mes.value }]}" ng-repeat="periodo in vm.periodos">{[{ periodo.mes.text }]}</option>
+      </select>
+    </div>
+    <div class="col-md-2 col-xs-12 text-left">
+      <label>Año Facturado:</label>
+      <select class="select2" id="selectAnioFacturado" style="width:150px;" ng-model="vm.anioFact">
+        <option value="{[{ periodo.anio }]}" ng-repeat="periodo in vm.periodos">{[{ periodo.anio }]}</option>
+      </select>
+    </div>
+    <div class="col-md-2 col-xs-12 pt-4 ml-0 text-left">
+      <button ng-click="vm.changePeriod()" title="Filtrar" class="btn btn-sm btn-info"><li class="fa fa-filter"></li></button>
+    </div>
+  </div>
+
+  <div id="loaderCodigo" >
+    <img id="imgloader" alt="Cargando Visualización de Datos" src="{{ asset('bundles/app/img/EclipseLoader.gif') }}">
+    <span class="help-block d-block text-center">Cargando Visualización de Datos</span>
+  </div>
+
+  <div id="noPagos" style="margin-top:30px;"></div>
+
+  <div class="container-fluid" id="graficas" ng-show="vm.noPagos">
+    <div class="row">
+      <div class="col-md-12 col-xs-12" id="empresas" ng-show="vm.empresas.length > 0">
+        <select class="select2" id="selectEmpresas" style="width:300px;" ng-change="vm.changeSelect()" ng-model="vm.selectEmpresas">
+          <option value="{[{ empresa.razonSocial }]}" ng-repeat="empresa in vm.empresas">{[{ empresa.razonSocial }]}</option>
+        </select>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-6">
+        <span>Gráfica: Total Recaudado por Agencia hasta la fecha.</span>
+        <canvas id='line'></canvas>
+      </div>
+      <div class="col-md-6">
+        <span>Gráfica: Número de Facturas Recaudadas por Agencia hasta la fecha.</span>
+        <canvas id="pie"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+{% block javascripts %}
+  $(document).ready(function() {
+    $('.select2').select2({
+      width : 'resolve',
+      theme : 'bootstrap'
+    });
+   });
+
+{% endblock %}

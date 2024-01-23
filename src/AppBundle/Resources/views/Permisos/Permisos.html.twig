@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item">Maestros</li>
+      <li class="breadcrumb-item active" aria-current="page">Permisos</li>
+    </ol>
+  </nav>
+  <div class="container-fluid" style="height:600px;">
+      <header class='text-center'>
+          <h2>Administrar Permisos de Grupos de Usuarios.</h2>
+          <span class="help-block"><li class="fa fa-info-circle text-info"></li> En este módulo podrá quitar o asignar permisos de cada grupo de usuarios del sistema.</span>
+      </header>
+      <div class="container w-75">
+          {{ form_start(form) }}
+            <div class="col-md-12 row mx-auto mt-1">
+              <div class="col-md-6">{{ form_widget(form.empresa) }}</div>
+              <div class="col-md-6">{{ form_widget(form.idGrupoUsuario) }}</div>
+            </div>
+
+            <div class="col-md-12 row mx-auto mt-1">
+              <div class="col-md-5">
+                <h4 class="cTomato">{{ form_label(form.sinAcceso) }}</h4>
+                {{ form_widget(form.sinAcceso) }}
+              </div>
+              <div class="col-md-2" style="padding-top:170px;">
+                <span id="quitar" class="btn-sm btn-warning text-white mx-auto mt-3 d-block fa fa-angle-double-left"></span>
+                <span id="asignar" class="btn-sm btn-warning text-white mx-auto mt-3 d-block fa fa-angle-double-right"></span>
+              </div>
+              <div class="col-md-5">
+                <h4 class="cTomato">{{ form_label(form.conAcceso) }}</h4>
+                {{ form_widget(form.conAcceso) }}
+              </div>
+            </div>
+          {{ form_end(form) }}
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  $(document).ready(function(){
+
+    $("#form_idGrupoUsuario").change(function(){
+      $http("select");
+    });
+
+    $("#asignar").click(function(){
+      if($("#form_sinAcceso option:selected").val() != undefined){
+        $http("insert",$("#form_sinAcceso option:selected").val());
+      }else{
+        alert("Debe seleccionar un elemento de los módulos de 'Acceso Denegado', antes de realizar esta acción.");
+      }
+    });
+
+    $("#quitar").click(function(){
+      if($("#form_conAcceso option:selected").val() != undefined){
+        $http("delete",$("#form_conAcceso option:selected").val());
+      }else{
+        alert("Debe seleccionar un elemento de los módulos de 'Acceso Permitido', antes de realizar esta acción.");
+      }
+    });
+
+
+    getAbsolutePath = function(){
+        var loc = window.location;
+        var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+        var url = loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length)).replace("/admin","");
+
+        return url;
+    }
+
+    function $http(accion,pagina){
+      var url = getAbsolutePath();
+
+      var empresa = $("#form_empresa option:selected").val();
+      var idgrupousuario = $("#form_idGrupoUsuario option:selected").val();
+
+      $.ajax({
+        url: url+"getPermisos/"+idgrupousuario+"/"+empresa+"/"+accion,
+        data : {idPagina:pagina},
+        method : 'GET',
+        success:function(data){
+          $("#form_conAcceso").empty();
+          $("#form_sinAcceso").empty();
+          $.each(data.conacceso,function(key,value){
+            $("#form_conAcceso").append("<option class='m-3' value="+value.id_pagina+" >"+value.pagina+"</option>");
+          });
+
+          $.each(data.sinacceso,function(key,value){
+            $("#form_sinAcceso").append("<option class='m-3' value="+value.id_pagina+" >"+value.pagina+"</option>");
+          });
+        }
+      });
+    }
+  });
+{% endblock %}

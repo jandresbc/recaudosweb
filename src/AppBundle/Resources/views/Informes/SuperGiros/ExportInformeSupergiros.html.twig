@@ -1,0 +1,92 @@
+{# extends 'baseInformes.html.twig' #}
+
+{% block body %}
+  <!--<header>
+    <h3 class="cTomato">Informe de Recaudos SuperGiros.</h3>
+  </header>-->
+  <div class="container-fluid" style="height: 100%;">
+    <table class="table table-striped table-bordered table-sm">
+      <thead class="bg-info text-white">
+        <tr>
+          <th>Nit</th>
+          <th>Entidad</th>
+          <th>Zona</th>
+          <th>Oficina</th>
+          <th>Telefono</th>
+          <th>Celular Ofic</th>
+          <th>Recaudador</th>
+          <th>Nro Identi Recaudador</th>
+          {% if app.request.get('form')['tipoDatos'] == 1 %}
+            <th>Lote</th>
+          {% elseif app.request.get('form')['tipoDatos'] == 2 %}
+            <th>Nro. Transaccion</th>
+          {% endif %}
+          <th>Cupones</th>
+          <th>Total Lote</th>
+          {% if app.request.get('form')['tipoDatos'] == 1 %}
+            <th>Fecha Recaudo / Cierre de Caja</th>
+          {% elseif app.request.get('form')['tipoDatos'] == 2 %}
+            <th>Fecha Recaudo</th>
+          {% endif %}
+          <th>Estado</th>
+          <th>Entidad Bancaria</th>
+          <th>Municipio</th>
+          <th>Nro Cuenta</th>
+          <th>Tipo Cuenta</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if app.request.get('form')['tipoDatos'] == 1 %}
+          {% set pagos = 0 %}
+          {% for datos in data %}
+            <tr>
+              <td>{{ datos.getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia().getIdAgencia().getNitAgencia() }}</td>
+              <td>{{ datos.getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia().getIdAgencia().getNombreAgencia }}</td>
+              <td>{{ datos.getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia().getIdDivipola().getNomPoblad }}</td>
+              <td>{{ datos.getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia().getNombreSede }}</td>
+              <td>{{ datos.getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia().getTelCel }}</td>
+              <td>{{ datos.getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia().getTelCel }}</td>
+              <td>{{ datos.getIdCaja().getIdUsuario.getNombreCompleto }}</td>
+              <td>{{ datos.getIdCaja().getIdUsuario.getIdentificacion }}</td>
+              <td>{{ datos.getNroDocumento() }}</td>
+              <td>{{ datos.getTotalColillas }}</td>
+              <td>${{ datos.getVlrEnCaja|number_format(0,",",".") }}</td>
+              <td>{{ datos.getFechaHoraCierre|date("d/m/Y H:i:s") }}</td>
+              <td>Recaudado</td>
+              <td></td>
+              <td>{{ datos.getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia().getIdDivipola().getNomPoblad }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            {% set pagos = pagos+datos.getVlrEnCaja %}
+          {% endfor %}
+        {% elseif app.request.get('form')['tipoDatos'] == 2 %}
+            {% set pagos = 0 %}
+            {% for datos in data %}
+              <tr>
+                <td>{{ datos.getIdTransaccion.getIdCaja.getIdEmpresaSedeAgencia.getIdSedeAgencia.getIdAgencia.getNitAgencia }}</td>
+                <td>{{ datos.getIdTransaccion.getIdCaja.getIdEmpresaSedeAgencia.getIdSedeAgencia.getIdAgencia.getNombreAgencia }}</td>
+                <td>{{ datos.getIdTransaccion.getIdCaja.getIdEmpresaSedeAgencia.getIdSedeAgencia.getIdDivipola().getNomPoblad }}</td>
+                <td>{{ datos.getIdTransaccion.getIdCaja.getIdEmpresaSedeAgencia.getIdSedeAgencia.getNombreSede }}</td>
+                <td>{{ datos.getIdTransaccion.getIdCaja.getIdEmpresaSedeAgencia.getIdSedeAgencia.getTelCel }}</td>
+                <td>{{ datos.getIdTransaccion.getIdCaja.getIdEmpresaSedeAgencia.getIdSedeAgencia.getTelCel }}</td>
+                <td>{{ datos.getIdTransaccion.getIdCaja.getIdUsuario.getNombreCompleto }}</td>
+                <td>{{ datos.getIdTransaccion.getIdCaja.getIdUsuario.getIdentificacion }}</td>
+                <td>{{ datos.getIdTransaccion.getNroTransaccion }}</td>
+                <td></td>
+                <td>${{ datos.getVlrPago|number_format(0,",",".") }}</td>
+                <td>{{ datos.getFechaHoraPago|date("d/m/Y H:i:s") }}</td>
+                <td>Recaudado</td>
+                <td></td>
+                <td>{{ datos.getIdTransaccion.getIdCaja().getIdEmpresaSedeAgencia().getIdSedeAgencia().getIdDivipola().getNomPoblad }}</td>
+                <td></td>
+                <td></td>
+              </tr>
+            {% set pagos = pagos+datos.getVlrPago %}
+            {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+{% endblock %}

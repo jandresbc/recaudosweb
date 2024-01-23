@@ -1,0 +1,270 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Cruce de Cuentas</li>
+    </ol>
+  </nav>
+  <div class="container" style="height:1000px;">
+      <div class="row">
+          <div class="col-md-12 text-center">
+              <header class='text-center'>
+                  <h2>Registrar Cruce de Cuentas.</h2>
+                  <span class="help-block"><li class="fa fa-info-circle text-info"></li> En este formulario usted podrá registrar los pagos realizando el cruce de cuentas (* Campos Requeridos). En este módulo podrá registrar los pagos realizados por empresas o personas con los cuales tenga un contrato o convenio en el cual se paga un servicio con otro de igual o menor valor, aquí podrá registrar la diferencia del cruce de estos servicios.</span>
+              </header>
+
+              {% if Error is defined and Error is not null %}
+                  <div id='Error' class="alert alert-danger alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ Error }}
+                  </div>
+              {% else %}
+                {% if mensajes is defined and mensajes is not null or app.request.get('mensajes') is defined and app.request.get('mensajes') is not null%}
+                    <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      {% if mensajes is defined %}
+                        {{ mensajes }}
+                      {% elseif app.request.get('mensajes') is defined %}
+                        {{ app.request.get('mensajes') }}
+                      {% endif %}
+                    </div>
+                {% endif %}
+              {% endif %}
+
+              {{ form_start(form) }}
+
+                <div class="form-group row">
+                  <div class="col-md-5 text-right">{{ form_label(form.niu) }}</div>
+                  <div class="col-md-7">{{ form_widget(form.niu) }}</div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-md-5 text-right">{{ form_label(form.nroFactura) }}</div>
+                  <div class="col-md-7 text-left">
+                    {{ form_widget(form.nroFactura) }}
+                    <a id="searchInvoices" class="btn btn-info btn-sm text-white d-inline-block">
+                      Buscar
+                      <li class="fa fa-search"></li>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="form-group row invisible" id="selectFacturas">
+                  <div class="inline-block col-md-5 text-right">Facturas:</div>
+                  <div class="inline-block col-md-7 text-left">
+                    {{ form_widget(form.facturas) }}
+                    <span class="help-block text-left"><li class="fa fa-info-circle text-info"></li> Seleccione la factura de la cual desea aplicar el Cruce de Cuentas.</span>
+                  </div>
+                </div>
+
+                <hr>
+
+                <div id="camposRequeridos">
+                  <div class="form-group row">
+                    <div class="col-md-5 text-right">{{ form_label(form.cajas) }}</div>
+                    <div class="col-md-7 text-left">
+                      {{ form_widget(form.cajas) }}
+                      <span class="help-block text-left"><li class="fa fa-info-circle text-info"></li> Seleccione la caja a la cual desea cargar el Cruce de Cuentas.</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group row" id="metodoPago">
+                    <div class="inline-block col-md-5 text-right">{{ form_label(form.metodoPago) }}</div>
+                    <div class="inline-block col-md-7 text-left">
+                      {{ form_widget(form.metodoPago) }}
+                      <span class="help-block text-left"><li class="fa fa-info-circle text-info"></li> Seleccione el método por el cual el cliente pagó. Si el método no concuerda con alguna de las opciones, deje seleccionado la opción "Otro".</span>
+                    </div>
+                  </div>
+
+                  <div id="controles" class="form-group row col-md-12">
+                    <div id="pseConsignacion" class="col-md-12">
+                      <div class="form-group col-md-4 col-xs-12">
+                          <label class="label">Banco: *</label>
+                          <select id="banco" name="appbundle_crucedecuentas_banco" class="form-control mw-50">
+                            <option value="BBVA">BBVA</option>
+                            <option value="Bancolombia">Bancolombia</option>
+                            <option value="Banco Agrario">Banco Agrario</option>
+                            <option value="Banco Popular">Banco Popular</option>
+                          </select>
+                      </div>
+                      <div class="form-group col-md-4 col-xs-12">
+                          <div id="fecha_consignacion">
+                            <label class="label">Fecha/Hora Consignación o de la Operación: *</label>
+                            <input type="date" style="width:170px;" id="fechaConsignacion" name="appbundle_crucedecuentas_fechaConsignacion" class="form-control d-inline-block" placeholder="Fecha Consignación">
+                            <input type="time" style="width:140px;" id="horaConsignacion" name="appbundle_crucedecuentas_horaConsignacion" class="form-control d-inline-block" placeholder="Hora Consignación">
+                          </div>
+                      </div>
+                      <div class="form-group col-md-4 col-xs-12" id="nro_consignacion">
+                          <label for="cambio" class="label">Número Consignación o de Operación: *</label>
+                          <input type="number" class="input-group form-control mw-100" id="nroconsignacion" name="appbundle_crucedecuentas_nroConsignacion" placeholder="Número de Consignación">
+                      </div>
+                    </div>
+
+                    <div id="chequeControl" class="col-md-6">
+                      <div class="col-md-3"></div>
+                      <div class="form-group col-md-4 col-xs-12">
+                        <label class="label">Banco: *</label>
+                        <select id="banco" name="appbundle_crucedecuentas_banco" class="form-control w-100">
+                          <option value="BBVA">BBVA</option>
+                          <option value="Bancolombia">Bancolombia</option>
+                          <option value="Banco Agrario">Banco Agrario</option>
+                          <option value="Banco Popular">Banco Popular</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-4 col-xs-12">
+                        <label class="label">Número Cheque: *</label>
+                        <input type="number" id="nrocheque" name="appbundle_crucedecuentas_nroCheque" class="form-control w-100" placeholder="Número de Cheque">
+                      </div>
+                      <div class="col-md-1"></div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="inline-block col-md-5 text-right">{{ form_label(form.valorCruce) }} ($)</div>
+                    <div class="inline-block col-md-7 text-left">{{ form_widget(form.valorCruce) }}
+                    <span class="help-block"><li class="fa fa-info-circle text-info"></li> Ingrese el valor del cruce de cuentas a registrar por el número de factura seleccionado. Solo digite el valor, en dinero, que haya ingresado a la empresa, ya sea por consignación, efectivo o pagos por medios electrónicos por este cruce de cuentas.</span></div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-5 text-right">{{ form_label(form.observaciones) }}<span class="help-block"></div>
+                    <div class="text-left col-md-7">{{ form_widget(form.observaciones) }}
+                    <span class="help-block"><li class="fa fa-info-circle text-info"></li> Escriba una descripción detallada de este cruce de cuentas. Ejemplo: Nro. Contrato, fecha o número del convenio.</span></div>
+                  </div>
+                  <br>
+                  <div class="text-center">
+                    <input type="submit" class='btn btn-primary' value="Registrar Cruce" />
+                  </div>
+                </div>
+              {{ form_end(form) }}
+
+          </div>
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+      {{parent()}}
+      $(document).ready(function(){
+        var pseConsignacion = ""
+        var cheque = ""
+
+        pseConsignacion = $("#pseConsignacion").html();
+        $("#pseConsignacion").empty();
+
+        cheque = $("#chequeControl").html();
+        $("#chequeControl").empty();
+
+        $("#searchInvoices").click(function(e){
+          e.preventDefault();
+
+          if($("#appbundle_crucedecuentas_nroFactura").val() != '' || $("#appbundle_crucedecuentas_niu").val() != ''){
+            var ruta = getAbsolutePath();
+            $.get(ruta+"getInfoFactura",{
+                nroFactura:$("#appbundle_crucedecuentas_nroFactura").val(),
+                niu:$("#appbundle_crucedecuentas_niu").val(),
+                method:'GET'
+              },function(response){
+                data = response;
+
+                if(jQuery.isArray(data)){
+                  $("#appbundle_crucedecuentas_facturas").empty();
+                  $.each(data,function(key,value){
+                    if(value.status == 1){
+                      $("#selectFacturas").removeClass("invisible");
+                      $("#appbundle_crucedecuentas_facturas").append("<option class='badge badge-primary' value="+value.idFactura+" >"+value.nombreUsuario+" | $"+value.valorFactura+"</option>");
+                    }else if(value.status == 0){
+                      $("#selectFacturas").addClass("invisible");
+                      $.jAlert({
+                        'title': 'Sistema de Recaudos Web - Redylab v. 1.0',
+                        'content': value.error,
+                        'theme': 'blue',
+                        'btns': { 'text': 'Cerrar' }
+                      });
+                    }
+                  });
+                }else{
+                  if(data.status == 0){
+                    $("#selectFacturas").addClass("invisible");
+                    $.jAlert({
+                      'title': 'Sistema de Recaudos Web - Redylab v. 1.0',
+                      'content': data.error,
+                      'theme': 'blue',
+                      'btns': { 'text': 'Cerrar' }
+                    });
+                  }
+                }
+            });
+          }else{
+            $("#selectFacturas").addClass("invisible");
+            alert("Ingrese el Número de Factura o NIU antes de continuar.");
+          }
+        });
+
+        $("#appbundle_crucedecuentas_metodoPago").change(function(e){
+          controlesChequesConsignacion();
+        });
+
+        //Click en el botón registrar cruce
+        $(":submit").click(function(e){
+          if($("#chequeControl").html() != '' || $("#pseConsignacion").html() != ''){
+            e.preventDefault();
+            if(hasControles()){
+              $("form").submit()
+            }
+          }
+        });
+
+        //Activa los text de banco, nrocuenta,nroCheque
+        function controlesChequesConsignacion(metodoDefault=null){
+          var selection = $("#appbundle_crucedecuentas_metodoPago :selected").val();
+
+          if(selection == 'PSE'){
+            $("#controles").html(pseConsignacion);
+          }else if(selection == 'Cheque'){
+            $("#controles").html(cheque);
+          }else if(selection == 'Consignación'){
+            $("#controles").html(pseConsignacion);
+          }
+
+          //Resetea todos los campos.
+          $("#banco").val('');
+          $("#nrocheque").val('');
+          $("#nroconsignacion").val('');
+          $("#fechaConsignacion").val('');
+          $("#horaConsignacion").val('');
+        }
+
+        //Validación de los controles banco,nrocheque,nroconsignacion
+        function hasControles(){
+          var validacion = "";
+          var status = true;
+
+          if($("#appbundle_crucedecuentas_metodoPago :selected").val() != 'otro'){
+            $("#camposRequeridos").find("select,input,textarea").each(function(id,element){
+              if($(this).attr("id") != 'horaConsignacion'){
+                if ( $(this).is(':visible') && $(this).is(':disabled') == false ){
+                  if( $(this).val() == '' || $(this).val() == null ){
+                    status = false;
+                    $(this).css({borderColor:'red'});
+                  }
+
+                  $(this).change(function(){
+                    $(this).css({borderColor:'#D2D2D2'});
+                  });
+                }
+              }
+            });
+          }
+
+          if(status == false){
+            validacion = false;
+          }else if(status == true){
+            validacion = true;
+          }
+
+          return validacion;
+        }
+
+      });
+{% endblock %}

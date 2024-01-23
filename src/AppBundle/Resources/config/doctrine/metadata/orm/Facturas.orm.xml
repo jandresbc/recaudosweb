@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Facturas" table="facturas">
+    <indexes>
+      <index name="id_empresa" columns="id_empresa"/>
+    </indexes>
+    <id name="idFactura" type="integer" column="id_factura">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="nroFactura" type="string" column="nro_factura" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="matricula" type="string" column="matricula" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="nombreUsuario" type="string" column="nombre_usuario" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="concepto" type="string" column="concepto" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="valorFactura" type="float" column="valor_factura" precision="10" scale="0" nullable="false"/>
+    <field name="fechaVencimiento" type="datetime" column="fecha_vencimiento" nullable="false"/>
+    <field name="mesFacturado" type="string" column="mes_facturado" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="anioFacturado" type="string" column="anio_facturado" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="periodoActual" type="integer" column="periodo_actual" nullable="true">
+      <options>
+        <option name="unsigned"/>
+        <option name="comment">1=Periodo Facturación Actual, 0= Historial facturacion</option>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <many-to-one field="idEmpresa" target-entity="Empresas" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_empresa" referenced-column-name="id_empresa"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

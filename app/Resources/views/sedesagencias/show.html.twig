@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item">Maestros</li>
+        <li class="breadcrumb-item"><a href="{{ path('sedesagencias_index') }}">Sedes Agencias</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Ver Sede</li>
+      </ol>
+    </nav>
+
+    <div class="container-fluid" style="height:700px;">
+      <header class='text-center'>
+          <h2>Sede Nro. {{ sedesAgencia.idSedeAgencia }}</h2>
+      </header>
+      <div class="row table-responsive">
+        <table class="table table-striped table-bordered w-50 mx-auto">
+            <tbody>
+                {% if app.session.get('rol') == 'Superusuario' %}
+                <tr>
+                    <th>ID</th>
+                    <td>{{ sedesAgencia.idSedeAgencia }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <th>Nombre Sede</th>
+                    <td>{{ sedesAgencia.nombreSede }}</td>
+                </tr>
+                <tr>
+                    <th>Dirección</th>
+                    <td>{{ sedesAgencia.direccion }}</td>
+                </tr>
+                <tr>
+                    <th>Teléfono / Celular</th>
+                    <td>{{ sedesAgencia.telCel }}</td>
+                </tr>
+                <tr>
+                    <th>Agencia</th>
+                    <td>{{ sedesAgencia.idAgencia }}</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+
+      <div class="row ml-3">
+        <ul>
+            <li>
+                <a class="btn btn-info btn-sm" href="{{ path('sedesagencias_index') }}">Volver a la lista</a>
+            </li>
+            <li>
+                <a class="btn btn-primary btn-sm" href="{{ path('sedesagencias_edit', { 'idSedeAgencia': sedesAgencia.idSedeAgencia }) }}">Editar</a>
+            </li>
+            {% if app.session.get('rol') == 'Superusuario' or app.session.get('rol') == 'Administrador' %}
+            <li>
+                {{ form_start(delete_form) }}
+                    <input type="submit" value="Eliminar" class="btn btn-danger btn-sm">
+                {{ form_end(delete_form) }}
+            </li>
+            {% endif %}
+        </ul>
+      </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+{% endblock %}

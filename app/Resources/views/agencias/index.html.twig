@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item">Maestros</li>
+        <li class="breadcrumb-item active" aria-current="page">Agencias</li>
+      </ol>
+    </nav>
+
+    <header class='text-center'>
+        {% if app.session.get("rol") == 'Superusuario' %}
+          <h2>Lista de Agencias.</h2>
+          <span class="help-block"><li class="fa fa-info-circle text-info"></li> Lista de las Agencias registradas</span>
+        {% elseif app.session.get("rol") == 'Administrador' %}
+          <h2>Lista de Agencias Habilitadas.</h2>
+          <span class="help-block"><li class="fa fa-info-circle text-info"></li> Lista de las Agencias registradas y habilitadas para su empresa.</span>
+        {% endif %}
+    </header>
+
+    {% if mensajes is defined and mensajes is not null or app.request.get('mensajes') is defined and app.request.get('mensajes') is not null%}
+        <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {% if mensajes is defined %}
+            {{ mensajes }}
+          {% elseif app.request.get('mensajes') is defined %}
+            {{ app.request.get('mensajes') }}
+          {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="container-fluid">
+      <ul class="mb-2">
+          {% if app.session.get('rol') == 'Superusuario' or app.session.get('rol') == 'Administrador' %}
+          <li>
+              <a class="btn btn-info btn-sm" href="{{ path('agencias_new') }}">Crear Agencia</a>
+          </li>
+          {% endif %}
+      </ul>
+
+      <div class="text-left row mb-2" id="filtros">
+        <div class="col-md-2"><h6 class="mr-3">Filtros de búsqueda</h6></div>
+        <div class="col-md-7">
+          {{ form_start(form) }}
+            <div class="row d-inline-block">
+              <div class="col-md-12">{{ form_widget(form.nitAgencia) }}</div>
+            </div>
+            <div class="row d-inline-block">
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-info btn-sm"><li class="fa fa-search"></li></button>
+              </div>
+            </div>
+          {{ form_end(form) }}
+        </div>
+        <div class="col-md-3 text-right">
+            <span class="label label-warning">
+                Total Entradas: <span class="cTomato">{{ agencias.getTotalItemCount }}</span>
+            </span>
+        </div>
+      </div>
+
+      {% if agencias is not empty %}
+        <div class="table-responsive" style="height:650px; font-size:13px;">
+          <table class="table table-striped table-sm mx-auto">
+          <thead>
+              <tr>
+                  {% if app.session.get('rol') == 'Superusuario' %}
+                  <th>ID Agencia</th>
+                  {% endif %}
+                  <th>Nombre Agencia</th>
+                  <th>Nit Agencia</th>
+                  <th>Dirección</th>
+                  <th>Teléfono / Celular</th>
+                  <th>¿Inactiva?</th>
+                  <th>Acciones</th>
+              </tr>
+          </thead>
+          <tbody>
+          {% for agencia in agencias %}
+              <tr>
+                  {% if app.session.get('rol') == 'Superusuario' %}
+                  <td><a href="{{ path('agencias_show', { 'idAgencia': agencia.idAgencia }) }}">{{ agencia.idAgencia }}</a></td>
+                  {% endif %}
+                  <td>{{ agencia.nombreAgencia }}</td>
+                  <td>{{ agencia.nitAgencia }}</td>
+                  <td>{{ agencia.direccion }}</td>
+                  <td>{{ agencia.telCel }}</td>
+                  <td>
+                  {% if agencia.inactiva == 0 %}
+                      <span style="font-size:13px;" class="badge badge-success text-white">NO</span>
+                  {% elseif agencia.inactiva == 1 %}
+                      <span style="font-size:13px;" class="badge badge-danger text-white">SI</span>
+                  {% endif %}
+                  </td>
+                  <td>
+                      <ul>
+                          <li>
+                              <a title="Ver" href="{{ path('agencias_show', { 'idAgencia': agencia.idAgencia }) }}">
+                                <span class="fa fa-eye cTomato"></span>
+                              </a>
+                          </li>
+                          <li>
+                              <a title="Editar" href="{{ path('agencias_edit', { 'idAgencia': agencia.idAgencia }) }}">
+                                <span class="fa fa-edit cTomato"></span>
+                              </a>
+                          </li>
+                      </ul>
+                  </td>
+              </tr>
+          {% endfor %}
+          </tbody>
+          </table>
+          {# display navigation #}
+          <div class="navigation mx-auto">
+              {{ knp_pagination_render(agencias) }}
+          </div>
+        </div>
+      {% else %}
+        <div class="alert alert-warning w-50 mx-auto">No hay registros que listar.</div>
+      {% endif %}
+    </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+{% endblock %}

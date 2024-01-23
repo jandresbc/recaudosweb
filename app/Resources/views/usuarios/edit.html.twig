@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item">Maestros</li>
+      <li class="breadcrumb-item"><a href="{{ path('usuarios_index') }}">Usuarios</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Editar Usuario</li>
+    </ol>
+  </nav>
+
+  <div class="container-fluid" style="height:860px;">
+    <header class='text-center'>
+        <h2>Editar Usuario.</h2>
+        <span class="help-block"><li class="fa fa-info-circle text-info"></li> Edita un Usuario. (* Campos requeridos.)</span>
+    </header>
+
+    <div class="container w-50">
+      {{ form_start(edit_form) }}
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(edit_form.nombreCompleto) }}</div>
+            <div>{{ form_widget(edit_form.nombreCompleto) }}</div>
+          </div>
+
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(edit_form.identificacion) }}</div>
+            <div>{{ form_widget(edit_form.identificacion) }}</div>
+          </div>
+
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(edit_form.contrasena) }}</div>
+            <div>{{ form_widget(edit_form.contrasena,{attr:{value:usuario.getContrasena}}) }}</div>
+          </div>
+
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(edit_form.telefono) }}</div>
+            <div>{{ form_widget(edit_form.telefono) }}</div>
+          </div>
+
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(edit_form.activo) }}</div>
+            <div>{{ form_widget(edit_form.activo) }}</div>
+          </div>
+
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(edit_form.idGrupoUsuario) }}</div>
+            <div>{{ form_widget(edit_form.idGrupoUsuario) }}</div>
+          </div>
+
+          <div class="col-md-12 mx-auto mt-1">
+            <div class="text-left ml-2">{{ form_label(edit_form.idSedeAgencia) }}</div>
+            <div>{{ form_widget(edit_form.idSedeAgencia) }}</div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-12"><input type="submit" class="btn btn-primary btn-sm" value="Editar" /></div>
+          </div>
+      {{ form_end(edit_form) }}
+    </div>
+
+    <div class="row ml-3">
+      <ul>
+          <li>
+              <a class="btn btn-info btn-sm" href="{{ path('usuarios_index') }}">Volver a la lista</a>
+          </li>
+          {% if app.session.get('rol') == 'Superusuario' or app.session.get('rol') == 'Administrador'%}
+          <li>
+              {{ form_start(delete_form) }}
+                  <input type="submit" value="Eliminar" class="btn btn-danger btn-sm">
+              {{ form_end(delete_form) }}
+          </li>
+          {% endif %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}

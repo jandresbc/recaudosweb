@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-6">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('recaudos') }}">Recaudos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Subir Pagos .csv</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="container-fluid" style="height:1000px;">
+    <header class='text-center mx-auto' style="width:1000px;">
+        <h2>Subir Pagos .csv</h2>
+        <span class="help-block"><li class="fa fa-info-circle text-info"></li> En este módulo le permitirá subir, masívamente, los pagos efectuados en bancos o medios electrónicos como PSE. Recuerde que este módulo solo es para subir pagos por los medios anteriormente mencionados, y no se deben subir pagos que son hechos en efectivo, para tal efecto se debe ingresar al "Punto de Pago" y registrarlo; o en caso de que sea un solo pago por consignación(Bancos, PSE) debe hacerse también por el "Punto de Pago".</span>
+        <h6 class="text-info">Los pagos cargados serán registrados en la caja de nombre: {{ caja.getNombreCaja() }}</h6>
+    </header>
+
+    {% if Error is defined and Error is not null %}
+        <div id='Error' class="alert alert-danger alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert" style="overflow-y:scroll; height:100px;">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {% if Log is defined and Log is not null %}
+              <a href="{{ Log[0] }}" title="Ver Archivo de Errores al procesar pagos" target="_blank" download>
+                Ver Archivo de Errores al procesar pagos
+              </a>
+          {% endif %}
+          <ol>
+            {% for error in Error[0] %}
+              <li>{{ error | raw }}</li>
+            {% endfor %}
+          </ol>
+        </div>
+    {% endif %}
+
+    {% if mensajes is defined and mensajes is not null %}
+        <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ mensajes }}
+        </div>
+    {% endif %}
+
+    {% if app.request.get('mensajes') is defined and app.request.get('mensajes') is not null %}
+        <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ app.request.get('mensajes') }}
+        </div>
+    {% endif %}
+
+    {% if app.request.get('error') is defined and app.request.get('error') is not null %}
+        <div id='mensajeError' class="alert alert-danger alert-dismissible mt-3 w-50 mx-auto d-inline-block" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <ol>
+              {% for key, error in app.request.get('error') %}
+                <li>{{ error["error"] | raw }}</li>
+              {% endfor %}
+            </ol>
+        </div>
+    {% endif %}
+
+    <div class="m-3 text-left"><a href='{{ asset("bundles/app/templates/PlantillaRegistrarPagos.csv") }}' target="_blank" title="Descargar plantilla para el registro de pagos hechos por medios virtuales o consignaciones bancarias">Descargar Plantilla .csv</a></div>
+
+    {{ form_start(form) }}
+      <div class="row mx-auto w-50">
+          <div class="col-md-12">
+            <div>{{ form_widget(form.archivo) }}</div>
+            <div>
+              <span class="help-block"><li class="fa fa-info-circle text-info"></li> Tamaño Máx.: 1 Mb. 100 registros Máximo.</span>
+              <span class="help-block"><li class="fa fa-info-circle text-info"></li> Tiempo Máx. de Ejecución: 20 Min.</span>
+            </div>
+          </div>
+          <div class="row mx-auto mt-3">
+            <div class="col-md-12"><input type="submit" class="btn btn-primary btn-sm" value="Subir y Procesar" /></div>
+          </div>
+          <div></div>
+      </div>
+    {{ form_end(form) }}
+    <div class="row ml-3">
+      <ul>
+          <li>
+              <a class="btn btn-info btn-sm" href="{{ path('recaudos') }}">Volver al módulo Recaudos</a>
+          </li>
+      </ul>
+    </div>
+    {% if logs is defined %}
+      <div>logs de cargue: <a href='#'>Descargar log.txt</a></div>
+      {% for log in logs %}
+        <div>{{ log.item }}</div>
+        <div>{{ log.mensaje }}</div>
+      {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+{% endblock %}

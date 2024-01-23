@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="CierresDeCajas" table="cierres_de_cajas">
+    <indexes>
+      <index name="id_caja" columns="id_caja"/>
+    </indexes>
+    <id name="idCierreCaja" type="integer" column="id_cierre_caja">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="fechaHoraCierre" type="datetime" column="fecha_hora_cierre" nullable="false"/>
+    <field name="totalRecaudoCaja" type="float" column="total_recaudo_caja" precision="10" scale="0" nullable="true"/>
+    <field name="vlrEnCaja" type="float" column="vlr_en_caja" precision="10" scale="0" nullable="true"/>
+    <field name="diferenciaCierre" type="float" column="diferencia_cierre" precision="10" scale="0" nullable="true"/>
+    <field name="totalColillas" type="integer" column="total_colillas" nullable="true">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="nroDocumento" type="string" column="nro_documento" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+        <option name="comment">Número de documento que será generado por cada cierre de caja. (Será separado por puntos (.))</option>
+      </options>
+    </field>
+    <many-to-one field="idCaja" target-entity="Cajas" fetch="LAZY">
+      <join-columns>
+        <join-column name="id_caja" referenced-column-name="id_caja"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

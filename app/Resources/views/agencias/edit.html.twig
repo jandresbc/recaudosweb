@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item">Maestros</li>
+        <li class="breadcrumb-item"><a href="{{ path('agencias_index') }}">Agencias</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Editar Agencia</li>
+      </ol>
+    </nav>
+
+    <div class="container-fluid" style="height:860px;">
+      <header class='text-center'>
+          <h2>Editar Agencia.</h2>
+          <span class="help-block"><li class="fa fa-info-circle text-info"></li> Edita una agencia. (* Campos requeridos.)</span>
+      </header>
+
+      <div class="container w-50">
+        {{ form_start(edit_form) }}
+            <div class="col-md-12 mx-auto mt-1">
+              <div class="text-left ml-2">{{ form_label(edit_form.nombreAgencia) }}</div>
+              <div>{{ form_widget(edit_form.nombreAgencia) }}</div>
+            </div>
+            <div class="col-md-12 mx-auto mt-1">
+              <div class="text-left ml-2">{{ form_label(edit_form.nitAgencia) }}</div>
+              <div>{{ form_widget(edit_form.nitAgencia) }}</div>
+            </div>
+            <div class="col-md-12 mx-auto mt-1">
+              <div class="text-left ml-2">{{ form_label(edit_form.direccion) }}</div>
+              <div>{{ form_widget(edit_form.direccion) }}</div>
+            </div>
+            <div class="col-md-12 mx-auto mt-1">
+              <div class="text-left ml-2">{{ form_label(edit_form.telCel) }}</div>
+              <div>{{ form_widget(edit_form.telCel) }}</div>
+            </div>
+            <div class="col-md-12 mx-auto mt-1">
+              <div class="text-left ml-2">{{ form_label(edit_form.inactiva) }}</div>
+              <div>{{ form_widget(edit_form.inactiva) }}</div>
+            </div>
+            <div class="col-md-12 mx-auto mt-1">
+              <div class="text-left ml-2">{{ form_label(edit_form.agenciasEmpresas) }}</div>
+              <div>{{ form_widget(edit_form.agenciasEmpresas) }}</div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-12"><input type="submit" class="btn btn-primary btn-sm" value="Editar" /></div>
+            </div>
+        {{ form_end(edit_form) }}
+      </div>
+
+      <div class="row ml-3">
+        <ul>
+            <li>
+                <a class="btn btn-info btn-sm" href="{{ path('agencias_index') }}">Volver a la lista</a>
+            </li>
+            {% if app.session.get('rol') == 'Superusuario' or app.session.get('rol') == 'Administrador' %}
+            <li>
+                {{ form_start(delete_form) }}
+                    <input type="submit" value="Eliminar" class="btn btn-danger btn-sm">
+                {{ form_end(delete_form) }}
+            </li>
+            {% endif %}
+        </ul>
+      </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}

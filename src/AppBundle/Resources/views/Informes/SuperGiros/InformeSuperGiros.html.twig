@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white">
+      <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+      <li class="breadcrumb-item">Informes</li>
+      <li class="breadcrumb-item active" aria-current="page">Informe SuperGiros</li>
+    </ol>
+  </nav>
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+          <div class="col-md-12 text-center">
+              <header class='text-center'>
+                  <h2>Informe SuperGiros S.A.</h2>
+                  <span class="help-block"><li class="fa fa-info-circle text-info"></li> Seleccione el rango de fechas del cuál desea exportar el informe.</span>
+              </header>
+              <main class="text-center">
+                {{ form_start(form) }}
+                  <div class="row text-center">
+
+                        <div class="col-md-3">
+                          <div class="text-right label">{{ form_label(form.fechaInicial) }}</div>
+                        </div>
+                        <div class="col-md-2">
+                          <div class="text-left">{{ form_widget(form.fechaInicial) }}</div>
+                        </div>
+                        <div class="col-md-2">
+                          <div class="label">{{ form_label(form.fechaFinal) }}</div>
+                        </div>
+                        <div class="col-md-5">
+                          <div class="text-left">{{ form_widget(form.fechaFinal) }}</div>
+                        </div>
+                        <div class="col-md-5 mx-auto mt-4">
+                          <div class="text-left">{{ form_widget(form.tipoDatos) }}</div>
+                        </div>
+
+                  </div>
+                  <input type="hidden" id="exportType" name="exportType" value="">
+                  <div class="text-center mt-4">
+                    <button id="btnXLS" type="submit" class='btn btn-sm btn-success'>
+                      <li class="fa fa-file-excel"> Exportar .xls</li>
+                    </button>
+                    <button id="btnCSV" type="submit" class='btn btn-sm btn-success'>
+                      <li class="fa fa-file-excel"> Exportar .csv</li>
+                    </button>
+                  </div>
+                {{ form_end(form) }}
+              </main>
+          </div>
+          {% if mensajes is defined and mensajes is not null %}
+              <div id='mensaje' class="alert alert-warning alert-dismissible mt-3 w-50" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ mensajes }}
+              </div>
+          {% endif %}
+
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    $(document).ready(function(){
+      $("#form_fechaInicial").val(moment().format("YYYY-MM-DD"));
+      $("#form_fechaFinal").val(moment().format("YYYY-MM-DD"));
+
+      $("#btnCSV").click(function(e){
+        $("#exportType").val("csv");
+      });
+
+      $("#btnXLS").click(function(e){
+        $("#exportType").val("excel");
+      });
+
+    });
+{% endblock %}

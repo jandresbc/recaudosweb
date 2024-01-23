@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name='Description' CONTENT='{% block description %}{% endblock %}'>
+        <meta name='Autor' CONTENT='devstudio.me | Ing. Julio Andrés Barrera Carvajal'>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}{% endblock %}</title>
+        {% block stylesheets %}
+          <style>
+            .contenido-alertas{
+              height:100%;
+              padding: 57px 7px;
+            }
+
+            .contenido-alertas span{
+              font-size: 80px;
+              color: #F3BA24;
+            }
+          </style>
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/app/css/estilos.css')}}" >
+        <!-- Latest compiled and minified CSS -->
+        <link href="{{ asset('bundles/app/js/bower_components/bootstrap/dist/css/bootstrap.min.css') }}" type="text/css" rel='stylesheet' media='screen'/>
+        <!-- FontAwesome 5.0.8 --->
+        <link href="{{ asset('bundles/app/js/bower_components/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css') }}" rel="stylesheet"/>
+    </head>
+    <body>
+        <div class='container-fluid text-center row w-100' style="margin:0px; padding:0px;">
+          <div class='col-md-12 col-xs-12 bg-danger w-100'>
+            {% if configuracionapps is defined %}
+              {% if configuracionapps is not null%}
+                <div class='nombreapp'>
+                  <span id="app">{{ configuracionapps[0].getNombreapp() }}|</span>
+                  <span>{{ configuracionapps[0].getSloganapp() }}</span>
+                </div>
+              {% endif %}
+            {% endif %}
+            <h2 class="text-white">Sistema de Alertas de Seguridad.</h2>
+            <a class="float-right" style="margin-top:16px; color:#FFF;" href='JavaScript:window.history.back()' title="Volver Sitio Anterior">
+              <span style="font-size:24px; color: #7CDA04;" class="fa fa-chevron-left"></span>
+              Volver.
+            </a>
+          </div>
+
+          <div class='contenido-alertas col-md-12 col-xs-12 text-center'>
+            <div class='alert alert-danger'>
+              <span class="fa fa-exclamation-triangle"></span>
+              <h2>{{ mensaje_error }}</h2>
+            </div>
+          </div>
+        </div>
+        <footer class="bg-dark text-white text-center w-100" style="bottom:0px; position:fixed;">
+            Copyright © <a class="text-white" target="_blank" href='http://www.devstudio.me'>devstudio.me</a> | <a href="https://www.facebook.com/devstudio.me/" class="text-white" target="_blank" title="Visita mi página en facebook">Ing. Julio Andrés Barrera C.</a> © {{ date().format('Y') }}
+        </footer>
+        {% block javascripts %}
+
+        {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb bg-white">
+    <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+    <li class="breadcrumb-item">Maestros</li>
+    <li class="breadcrumb-item"><a href="{{ path('facturas_index') }}">Facturación</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Editar Factura</li>
+  </ol>
+</nav>
+<div class="container-fluid" style="height:860px;">
+    <header class='text-center'>
+        <h2>Editar Factura.</h2>
+        <span class="help-block"><li class="fa fa-info-circle text-info"></li> Edita una factura. (* Campos requeridos.)</span>
+    </header>
+    <div>
+      {% if mensajes is defined %}
+        <div class="alert alert-warning w-50 mx-auto" role="alert">
+          {{ mensajes }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endif %}
+    </div>
+    <div class="container w-50">
+    {{ form_start(edit_form) }}
+      <div class="row">
+        <div class="col-md-6 text-right">{{ form_label(edit_form.nroFactura) }}</div>
+        <div class="col-md-6 text-left">{{ form_widget(edit_form.nroFactura) }}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 text-right">{{ form_label(edit_form.matricula) }}</div>
+        <div class="col-md-6">{{ form_widget(edit_form.matricula,{"attr":{"class":"w-100 form-control m-1"}}) }}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 text-right">{{ form_label(edit_form.nombreUsuario) }}</div>
+        <div class="col-md-6">{{ form_widget(edit_form.nombreUsuario) }}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 text-right">{{ form_label(edit_form.concepto) }}</div>
+        <div class="col-md-6">{{ form_widget(edit_form.concepto) }}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 text-right">{{ form_label(edit_form.valorFactura) }}</div>
+        <div class="col-md-6">{{ form_widget(edit_form.valorFactura) }}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 text-right">{{ form_label(edit_form.fechaVencimiento) }}</div>
+        <div class="col-md-6">{{ form_widget(edit_form.fechaVencimiento) }}</div>
+      </div>
+      <div class="row border-top m-2">
+        <div class="col-md-6 mt-2">
+          <div class="text-right">{{ form_label(edit_form.mesFacturado) }}</div>
+          <div>{{ form_widget(edit_form.mesFacturado) }}</div>
+        </div>
+        <div class="col-md-6 mt-2">
+          <div class="text-left">{{ form_label(edit_form.anioFacturado) }}</div>
+          <div>{{ form_widget(edit_form.anioFacturado) }}</div>
+        </div>
+      </div>
+      <div class="row border-top m-2">
+        <div class="col-md-6 mt-2">
+          <div class="text-right">{{ form_label(edit_form.observaciones) }} <span class="help-block"><li class="fa fa-info-circle text-info"></li> Opcional</span></div>
+          <div>{{ form_widget(edit_form.observaciones) }}</div>
+        </div>
+        <div class="col-md-6 mt-2">
+          <div class="text-left">{{ form_label(edit_form.mesesAtrasados) }} <span class="help-block"><li class="fa fa-info-circle text-info"></li> Opcional</span></div>
+          <div>{{ form_widget(edit_form.mesesAtrasados) }}</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mt-2">
+          <div class="text-right">{{ form_label(edit_form.periodoActual) }}</div>
+          <div>{{ form_widget(edit_form.periodoActual) }}</div>
+        </div>
+        <div class="col-md-6 mt-1">
+          <div class="text-left">{{ form_label(edit_form.isAbono) }}</div>
+          <div>{{ form_widget(edit_form.isAbono) }}</div>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-6 text-right">{{ form_label(edit_form.idEmpresa) }}</div>
+        <div class="col-md-6">{{ form_widget(edit_form.idEmpresa) }}</div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-md-12"><input type="submit" class="btn btn-primary btn-sm" value="Editar" /></div>
+      </div>
+    {{ form_end(edit_form) }}
+    </div>
+    <div class="row ml-3">
+      <ul>
+          <li>
+              <a class="btn btn-info btn-sm" href="{{ path('facturas_index') }}">Volver a la lista</a>
+          </li>
+          <li>
+              {{ form_start(delete_form) }}
+                  <input type="submit" value="Eliminar" class="btn btn-danger btn-sm">
+              {{ form_end(delete_form) }}
+          </li>
+      </ul>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+{% endblock %}

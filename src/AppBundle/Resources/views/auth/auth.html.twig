@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if login is defined %}
+        {% if login == 1 %}
+            <div class="text-center">
+                <div class="login row justify-content-center">
+                    <div class="card" style="width: 22rem;">
+                        <div class=' text-center' id="headerCard">
+                            <i class="fas fa-address-card fa-10x" style="color:tomato;"></i>
+                            <h1>Credenciales</h1>
+                            <h4>Sistema Redylab Recaudos</h4>
+                            <span class="help-block">Digita tus credenciales para ingresar al sistema.</span>
+                        </div>
+                      <div class="card-body">
+                         {{ form_start(formlogin) }}
+                          {{ form_widget(formlogin) }}
+                          <br>
+                          <div class="text-center">
+                            <input type="submit" class='btn btn-primary' value="Autenticar" />
+                          </div>
+                        {{ form_end(formlogin) }}
+                      </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

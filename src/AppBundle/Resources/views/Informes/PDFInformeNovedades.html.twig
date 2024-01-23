@@ -1,0 +1,91 @@
+{% extends 'baseInformes.html.twig' %}
+{% block stylesheets %}
+<style>
+  .container-fluid{
+    font-size: 11px;
+  }
+
+  table, tr, td, th, tbody, thead, tfoot {
+    page-break-inside: avoid !important;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+</style>
+{% endblock %}
+{% block body %}
+  <header>
+    <h3 class="cTomato">Informe de Novedades.</h3>
+
+    {% if app.session.get("rol") != 'Administrador Agencias' and app.session.get("rol") != 'Cajero' and app.session.get("rol") != 'Superusuario' %}
+      {{ config[0].getHeaderInformes|replace({"%title%":"Informe de Novedades."|upper})|raw }}
+    {% endif %}
+
+    <div style="display:inline-block; margin-top:0px;" class="text-left"><span class="cTomato">Informe Generado el</span> {{ "now"|date("d/m/Y h:i:s A") }}</div>
+    <div style="display:inline-block;" class="text-left">
+      <span class="cTomato">Mes/Año Facturado: </span>
+      <span>{{ app.request.get("appbundle_informenovedades")["mesFacturacion"]~"/"~app.request.get("appbundle_informenovedades")["anioFacturacion"] }}</span>
+    </div>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+      {% if novedades is defined %}
+        <div class="table-responsive">
+          <table class="table table-sm table-striped table-bordered">
+              <tr class="bg-info text-white">
+                <th>Item</th>
+                <th>Fecha/Hora Novedad</th>
+                <th>Módulo Afectado</th>
+                <th>Observaciones Novedad</th>
+                <th>Tipo Novedad</th>
+                <th>Fecha/Hora Pago</th>
+                <th>Valor Pago</th>
+                <th>Saldo</th>
+                <th>Banco</th>
+                <th>Fecha/Hora Consignación</th>
+                <th>Nro. Consignación</th>
+                <!--<th>Nro. Cheque</th>-->
+                <th>Observaciones del Pago</th>
+                <th>Método Pago</th>
+                <th>Tipo Pago</th>
+                <th>Usuario de la Novedad</th>
+                {% if app.session.get('rol') == 'Superusuario' %}
+                <th>Empresa</th>
+                {% endif %}
+              </tr>
+              <tbody>
+                {% for index, novedad in novedades %}
+                  <tr>
+                    <td>{{ index+1 }}</td>
+                    <td>{{ novedad["fecha_hora_novedad"] | date("d/m/Y h:i:s A") }}</td>
+                    <td>{{ novedad["modulo_afectado"] }}</td>
+                    <td>{{ novedad["observaciones_novedad"] }}</td>
+                    <td>{{ novedad["tipo_novedad"] }}</td>
+                    <td>{{ novedad["fecha_hora_pago"] | date("d/m/Y h:i:s A") }}</td>
+                    <td>{{ novedad["vlr_pago"] }}</td>
+                    <td>{{ novedad["saldo"] }}</td>
+                    <td>{{ novedad["banco"] }}</td>
+                    <td>{{ novedad["fecha_consignacion"] | date("d/m/Y h:i:s A") }}</td>
+                    <td>{{ novedad["nro_consignacion"] }}</td>
+                    <!--<td>{{ novedad["nro_cheque"] }}</td>-->
+                    <td>{{ novedad["observaciones"] }}</td>
+                    <td>{{ novedad["metodo_pago"] }}</td>
+                    <td>{{ novedad["tipo_pago"] }}</td>
+                    <td>{{ novedad["nombre_completo"] }}</td>
+                    {% if app.session.get('rol') == 'Superusuario' %}
+                    <td>{{ novedad["razon_social"] }}</td>
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+          </table>
+        </div>
+      {% endif %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

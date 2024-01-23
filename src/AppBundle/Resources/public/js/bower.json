@@ -1,0 +1,32 @@
+{
+  "name": "recaudosweb",
+  "authors": [
+    "Ing. Julio Andres Barrera <j.barreracarvajal@gmail.com>"
+  ],
+  "description": "Sistema de Recaudos Web v1.0",
+  "main": "web/app.php",
+  "keywords": [
+    "recaudos",
+    "web"
+  ],
+  "license": "MIT",
+  "homepage": "dashboard",
+  "dependencies": {
+    "bootstrap": "4.0",
+    "jquery": "^3.3.1",
+    "angular": "^1.6.9",
+    "fontawesome": "5.0.8",
+    "angular-resource": "^1.6.9",
+    "datatables.net-bs4": "^3.2.2",
+    "datatables.net-responsive-bs4": "^2.2.0",
+    "datatables.net-scroller-bs4": "^1.4.3",
+    "moment": "^2.21.0",
+    "select2-bootstrap-theme": "^0.1.0-beta.10",
+    "chart.js": "^2.7.2",
+    "ckeditor": "^4.10.0",
+    "angular-material": "master",
+    "angular-animate": "^1.7.5",
+    "angular-aria": "^1.7.5",
+    "angular-messages": "^1.7.5"
+  }
+}

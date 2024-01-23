@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item">Maestros</li>
+        <li class="breadcrumb-item"><a href="{{ path('novedades_index') }}">Novedades</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Ver Novedad</li>
+      </ol>
+    </nav>
+
+    <div class="container-fluid" style="height:700px;">
+
+      <header class='text-center'>
+          <h2>Novedad Nro. {{ novedades.idNovedad }}</h2>
+      </header>
+
+      <div class="row table-responsive">
+        <table class="table table-striped table-bordered w-50 mx-auto">
+            <tbody>
+                <tr>
+                    <th>TxHash</th>
+                    <td>{{ novedades.txHash }}</td>
+                </tr>
+                <tr>
+                    <th>Fecha/Hora Novedad</th>
+                    <td>{% if novedades.fechaHoraNovedad %}{{ novedades.fechaHoraNovedad|date('d/m/Y h:i:s A') }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <th>Modulo Afectado</th>
+                    <td>{{ novedades.moduloAfectado }}</td>
+                </tr>
+                <tr>
+                    <th>Identificador Datos Afectados</th>
+                    <td>{{ novedades.identificadorData }}</td>
+                </tr>
+                <tr>
+                    <th>Datos Afectados en la Novedad</th>
+                    <td>{{ novedades.anteriorData | replace({'~':' | '}) }}</td>
+                </tr>
+                <tr>
+                    <th>Observaciones</th>
+                    <td>{{ novedades.observacionesNovedad }}</td>
+                </tr>
+                <tr>
+                    <th>Usuario de la Novedad</th>
+                    <td>{{ novedades.idUsuario() }}</td>
+                </tr>
+                {% if app.session.get('rol') == 'Superusuario' %}
+                <tr>
+                    <th>Empresa</th>
+                    <td>{{ novedades.idEmpresa() }}</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+      </div>
+
+      <div class="row ml-3">
+        <ul>
+            <li>
+                <a class="btn btn-sm btn-info" href="{{ path('novedades_index') }}">Volver a la lista</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+{% endblock %}

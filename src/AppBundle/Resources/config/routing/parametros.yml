@@ -1,0 +1,24 @@
+parametros_index:
+    path:     /
+    defaults: { _controller: "AppBundle:Parametros:index" }
+    methods:  GET
+
+parametros_show:
+    path:     /{idParametros}/show
+    defaults: { _controller: "AppBundle:Parametros:show" }
+    methods:  GET
+
+parametros_new:
+    path:     /new
+    defaults: { _controller: "AppBundle:Parametros:new" }
+    methods:  [GET, POST]
+
+parametros_edit:
+    path:     /{idParametros}/edit
+    defaults: { _controller: "AppBundle:Parametros:edit" }
+    methods:  [GET, POST]
+
+parametros_delete:
+    path:     /{idParametros}/delete
+    defaults: { _controller: "AppBundle:Parametros:delete" }
+    methods:  DELETE

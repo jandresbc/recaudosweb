@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Redylab Recaudos - Copyright © devstudio.me | Ing. Julio Andrés Barrera C.{% endblock %}</title>
+        <link rel="icon" type="image/x-png" href="{{ asset('favicon.png') }}" />
+        <!--<link href="{{ asset('bundles/app/css/styles.css') }}" type="text/css" rel='stylesheet' media='screen'/>-->
+
+        <!-- Jquery -->
+        <script src="{{ asset('bundles/app/js/bower_components/jquery/dist/jquery.min.js') }}" type="application/javascript"></script>
+
+        <!-- Bootstrap -->
+        <link href="{{ asset('bundles/app/js/bower_components/bootstrap/dist/css/bootstrap.min.css') }}" type="text/css" rel='stylesheet' media='screen'/>
+        <script src="{{ asset('bundles/app/js/bower_components/bootstrap/dist/js/bootstrap.min.js') }}" type="application/javascript"></script>
+        <style>
+          body{
+            font-family: "Calibri";
+            font-style: normal;
+          }
+
+            .textCajero{
+                text-overflow:ellipsis;
+                white-space:nowrap;
+            }
+          @media print{
+            #Imprimir{
+              display: none !important;
+            }
+              .footer{
+                  display:  none !important;
+              }
+          }
+        </style>
+    </head>
+    <body>
+      <div id='reciboTransaccion' class="container-fluid row">
+          <header class="text-center col-xs-12" style="text-align:center;">
+            <div>{{ transaccionActual[0].getIdEmpresaSedeAgencia().getIdSedeAgencia().getIdAgencia().getNombreAgencia()|upper}}</div>
+            <div>NIT {{ transaccionActual[0].getIdEmpresaSedeAgencia().getIdSedeAgencia().getIdAgencia().getNitAgencia()  }}</div>
+            <div>COMPROBANTE DE PAGO</div>
+          </header>
+          <br><br>
+          <main class="col-xs-12">
+            <div><span>CÓDIGO TRANSACCIÓN: </span><span>{{ transaccionActual[0].getNroTransaccion() }}</span></div>
+            <div><span>FECHA PAGO: </span><span>{{ transaccionActual[0].getFechaHoraTransaccion()|date("d/m/Y h:i:s a") }}</span></div>
+            <div><span>CAJA: </span><span>{{ transaccionActual[0].getIdCaja().getNombreCaja() }}</span></div>
+            <div><span>CAJERO: </span><span class="textCajero">{{ transaccionActual[0].getIdUsuario().getNombreCompleto() }}</span></div>
+            <div><span>SEDE AGENCIA: </span><span>{{ transaccionActual[0].getIdEmpresaSedeAgencia().getIdSedeAgencia().getNombreSede() }}</span></div>
+            <br>
+            <div class="text-center" style="text-align:center;">
+              <div>CÓDIGO DE SEGURIDAD </div>
+              <div>{{ transaccionActual[0].getCodigoSeguridad() }}</div>
+            </div>
+            <br>
+            <div><span>VALOR TOTAL PAGADO: </span><span>${{ transaccionActual[0].getTotalTransaccion()|number_format(0,",",".") }}</span></div>
+            <br>
+            <div style="border-bottom-style: dashed; width:100%; text-align:center;">PAGOS REALIZADOS</div>
+            <br>
+            {% for pago in pagos %}
+              <div><span>NRO. FACTURA: </span><span>{{ pago.getIdFactura().getNroFactura() }}</span></div>
+              <div><span>VALOR PAGO: </span><span>${{ pago.getVlrPago()|number_format(0,",",".") }}</span></div>
+              <div><span>FECHA PAGO: </span><span>{{ pago.getFechaHoraPago()|date("d/m/Y h:i:s a") }}</span></div>
+              <br>
+            {% endfor %}
+          </main>
+          <br>
+          <div style="text-align:center;" class="text-center col-xs-12 w-100">VÁLIDO COMO SOPORTE ÚNICO PARA RECLAMOS</div>
+          <br>
+          <footer class="col-xs-12 text-center" style="text-align:center;">
+            <div class="footer">Pago realizado en el Sistema de Recaudos Web</div>
+            <span>Copyright © devstudio.me | Ing. Julio Andrés Barrera C. © {{ date().format('Y') }}</span>
+          </footer>
+      </div>
+      <br><br><br>
+      <div id="Imprimir">
+        <button class="btn btn-success bt-sm" id="btnImprimir" onClick="Imprimir()">Imprimir</button>
+      </div>
+      <script>
+          function Imprimir(){
+            window.print();
+            window.close();
+          }
+        $("#reciboTransaccion").ready(function(){
+          $("#btnImprimir").trigger('click');
+        });
+      </script>
+    </body>
+</html>

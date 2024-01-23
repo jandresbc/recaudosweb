@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('parametros_index') }}">Configuración del sistema</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Ver Parametro</li>
+      </ol>
+    </nav>
+    <div class="container-fluid" style="height:700px;">
+      <header class='text-center'>
+          <h2>Parametro Nro. {{ parametro.idParametros }}</h2>
+      </header>
+
+      <div class="row">
+      <table class="table table-striped table-bordered w-50 mx-auto">
+          <tbody>
+              <tr>
+                  <th>ID Parametro</th>
+                  <td>{{ parametro.idParametros }}</td>
+              </tr>
+              <tr>
+                  <th>Url Logo Empresa</th>
+                  <td>{{ parametro.urlLogoEmpresa }}</td>
+              </tr>
+              <tr>
+                  <th>Encabezado Informes</th>
+                  <td>{{ parametro.headerInformes|raw }}</td>
+              </tr>
+              <tr>
+                  <th>% Meta Recaudo</th>
+                  <td>{{ parametro.porcentajeMetaRecaudo }}</td>
+              </tr>
+          </tbody>
+      </table>
+      </div>
+
+      <div class="row ml-3">
+        <ul>
+            <li>
+                <a class="btn btn-info btn-sm" href="{{ path('parametros_index') }}">Volver a la lista</a>
+            </li>
+            <li>
+                <a class="btn btn-primary btn-sm" href="{{ path('parametros_edit', { 'idParametros': parametro.idParametros }) }}">Editar</a>
+            </li>
+            {% if app.session.get('rol') == 'Superusuario' %}
+            <li>
+                {{ form_start(delete_form) }}
+                    <input type="submit" value="Eliminar" class="btn btn-danger btn-sm">
+                {{ form_end(delete_form) }}
+            </li>
+            {% endif %}
+        </ul>
+      </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+{% endblock %}

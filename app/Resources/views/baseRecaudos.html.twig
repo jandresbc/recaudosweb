@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html ng-app="recaudos">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Redylab Recaudos{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-png" href="{{ asset('favicon.png') }}" />
+        <link href="{{ asset('bundles/app/css/styles.css') }}" type="text/css" rel='stylesheet' media='screen'/>
+
+        <!-- Jquery -->
+        <script src="{{ asset('bundles/app/js/bower_components/jquery/dist/jquery.min.js') }}" type="application/javascript"></script>
+
+        <!-- Bootstrap -->
+        <link href="{{ asset('bundles/app/js/bower_components/bootstrap/dist/css/bootstrap.min.css') }}" type="text/css" rel='stylesheet' media='screen'/>
+        <script src="{{ asset('bundles/app/js/bower_components/bootstrap/dist/js/bootstrap.min.js') }}" type="application/javascript"></script>
+
+        <!-- FontAwesome 5.0.8 -->
+        <link href="{{ asset('bundles/app/js/bower_components/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css') }}" rel="stylesheet"/>
+
+        <!-- select2 -->
+        <link href="{{ asset('bundles/app/js/bower_components/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
+        <!-- tema bootstrap select2 -->
+        <link rel="stylesheet" href="{{ asset('bundles/app/js/bower_components/select2-bootstrap-theme/dist/select2-bootstrap.min.css') }}">
+        <script src="{{ asset('bundles/app/js/bower_components/select2/dist/js/select2.full.min.js') }}" type="application/javascript"></script>
+
+        <!-- chartjs -->
+        <script src="{{ asset('bundles/app/js/bower_components/chart.js/dist/Chart.min.js') }}" type="application/javascript"></script>
+
+        <!-- fullscreenjs -->
+        <script type="text/javascript" src="{{ asset('bundles/app/js/fullscreenjs/fullscreenjs.js') }}"></script>
+
+        <!-- Angular 1.6 -->
+        <link rel="stylesheet" href="{{ asset('bundles/app/js/bower_components/angular-material/angular-material.min.css') }}">
+        <script src="{{ asset('bundles/app/js/bower_components/angular/angular.min.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/bower_components/angular-resource/angular-resource.min.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/bower_components/angular-animate/angular-animate.min.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/bower_components/angular-messages/angular-messages.min.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/bower_components/angular-aria/angular-aria.min.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/bower_components/angular-material/angular-material.min.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/angular/app.config.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/angular/app.module.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/angular/transacciones/transacciones.controller.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/angular/dashboard/dashboard.controller.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/angular/novedades/novedades.controller.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/angular/businessIntelligence/business.controller.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/angular/angular-pagination/pagination.controller.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/angular/app.api.js') }}" type="application/javascript"></script>
+        
+        <!-- moment -->
+        <script src="{{ asset('bundles/app/js/bower_components/moment/min/moment.min.js') }}" type="application/javascript"></script>
+        <script src="{{ asset('bundles/app/js/bower_components/moment/locale/es.js') }}" type="application/javascript"></script>
+
+        <!-- jAlert 4.0 Jquery -->
+        <link rel="stylesheet" href="{{ asset('bundles/app/js/jAlert/dist/jAlert.css') }}" />
+        <script src="{{ asset('bundles/app/js/jAlert/dist/jAlert.min.js') }}"></script>
+        <script src="{{ asset('bundles/app/js/jAlert/dist/jAlert-functions.min.js') }}"> //optional!!</script>
+
+        <!-- Idle jquery - Validar Inactividad.-->
+        <script type="text/javascript" src="{{ asset('bundles/app/js/jquery_idle/jquery.idle.js') }}"></script>
+
+        <script src="{{ asset('bundles/app/js/app.js') }}" type="application/javascript"></script>
+
+        <!-- downloadjs -->
+        <script type="text/javascript" src="{{ asset('bundles/app/js/download.js') }}"></script>
+
+    </head>
+    <body>
+        <div class='text-center row'>
+            <div class='col-md-12 col-xs-12'>
+              {% if mensajes_sistema is defined %}
+                {% if mensajes_sistema is not null %}
+                  <div id='mensajeSistema' class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ mensajes_sistema }}
+                  </div>
+                {% endif %}
+              {% endif %}
+              {% block body %}{% endblock %}
+            </div>
+        </div>
+        <footer class="bg-dark">
+            Copyright © <a class="text-white" target="_blank" href='http://www.devstudio.me'>devstudio.me</a> | <a href="https://www.facebook.com/devstudio.me/" class="text-white" target="_blank" title="Visita mi página en facebook">Ing. Julio Andrés Barrera C.</a> © {{ date().format('Y') }}
+        </footer>
+        <input type='hidden' id='logout' value="{{ path('logout',{usuario:app.session.get('identificacion'),nit:app.session.get('nit')}) }}">
+        <script>
+        {% block javascripts %}
+            $(document).ready(function() {
+              $(document).idle({
+                onIdle: function(){
+                  location.href = $('#logout').val();
+                },
+                idle: 1800000 //Media hora de inactividad.
+              })
+            });
+        {% endblock %}
+        </script>
+    </body>
+</html>

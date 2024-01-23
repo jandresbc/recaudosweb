@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-white">
+        <li class="breadcrumb-item"><a href="{{path('dashboard')}}">Dashboard</a></li>
+        <li class="breadcrumb-item">Maestros</li>
+        <li class="breadcrumb-item"><a href="{{ path('usuarios_index') }}">Usuarios</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Ver Usuario</li>
+      </ol>
+    </nav>
+
+    <div class="container-fluid" style="height:700px;">
+      <header class='text-center'>
+          <h2>Sede Nro. {{ usuario.idUsuario }}</h2>
+      </header>
+      <div class="row table-responsive">
+        <table class="table table-striped table-bordered w-50 mx-auto">
+            <tbody>
+                <tr>
+                    <th>Nombre</th>
+                    <td>{{ usuario.nombreCompleto }}</td>
+                </tr>
+                <tr>
+                    <th>Identificación</th>
+                    <td>{{ usuario.identificacion }}</td>
+                </tr>
+                <tr>
+                    <th>Teléfono</th>
+                    <td>{{ usuario.telefono }}</td>
+                </tr>
+                <tr>
+                    <th>Activo</th>
+                    <td>{% if usuario.activo == 0 %}
+                        <span style="font-size:13px;" class="badge badge-danger text-white">NO</span>
+                    {% elseif usuario.activo == 1 %}
+                        <span style="font-size:13px;" class="badge badge-success text-white">SI</span>
+                    {% endif %}</td>
+                </tr>
+                <tr>
+                    <th>Auth</th>
+                    <td>
+                    {% if usuario.auth == 0 %}
+                        <span style="font-size:13px;" class="badge badge-danger text-white">NO</span>
+                    {% elseif usuario.auth == 1 %}
+                        <span style="font-size:13px;" class="badge badge-success text-white">SI</span>
+                    {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Sede</th>
+                    <td>{{ usuario.idSedeAgencia }}</td>
+                </tr>
+                <tr>
+                    <th>Perfil</th>
+                    <td>{{ usuario.idGrupoUsuario }}</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+
+      <div class="row ml-3">
+        <ul>
+            <li>
+                <a class="btn btn-info btn-sm" href="{{ path('usuarios_index') }}">Volver a la lista</a>
+            </li>
+            <li>
+                <a class="btn btn-primary btn-sm" href="{{ path('usuarios_edit', { 'idUsuario': usuario.idUsuario }) }}">Editar</a>
+            </li>
+            {% if app.session.get('rol') == 'Superusuario' or app.session.get('rol') == 'Administrador' %}
+            <li>
+                {{ form_start(delete_form) }}
+                    <input type="submit" value="Eliminar" class="btn btn-danger btn-sm">
+                {{ form_end(delete_form) }}
+            </li>
+            {% endif %}
+        </ul>
+      </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}

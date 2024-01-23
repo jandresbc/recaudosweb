@@ -1,0 +1,29 @@
+sedesagencias_index:
+    path:     /
+    defaults: { _controller: "AppBundle:SedesAgencias:index" }
+    methods:  [POST,GET]
+
+sedesagencias_show:
+    path:     /{idSedeAgencia}/show
+    defaults: { _controller: "AppBundle:SedesAgencias:show" }
+    methods:  GET
+
+sedesagencias_new:
+    path:     /new
+    defaults: { _controller: "AppBundle:SedesAgencias:new" }
+    methods:  [GET, POST]
+
+sedesagencias_edit:
+    path:     /{idSedeAgencia}/edit
+    defaults: { _controller: "AppBundle:SedesAgencias:edit" }
+    methods:  [GET, POST]
+
+sedesagencias_delete:
+    path:     /{idSedeAgencia}/delete
+    defaults: { _controller: "AppBundle:SedesAgencias:delete" }
+    methods:  DELETE
+
+sedesagencias_desactivar:
+    path:     /{idSedeAgencia}/desactivar
+    defaults: { _controller: "AppBundle:SedesAgencias:desactivar" }
+    methods:  GET
